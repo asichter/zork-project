@@ -118,6 +118,7 @@ void dump_to_stdout(const char* pFilename)
 }
 
 int main(int argc, char * argv[]) {
-  dump_to_stdout("studentActivity.xml");
+  XMLParser myxml;
+  myxml.parseData("studentActivity.xml");
   return 0;
 }
