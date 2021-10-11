@@ -1,4 +1,4 @@
-#include "Room.h"
+#include "../header/Room.h"
 
 Room::Room(std::string _name, std::string _status, std::string _type, std::string _description, std::string _borderN, std::string _borderE, std::string _borderW, std::string _borderS, std::vector<Item*> _items, std::vector<Container*> _containers, std::vector<Creature*> _creatures, std::vector<Trigger*> _triggers) {
     name = _name;

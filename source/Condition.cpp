@@ -1,4 +1,4 @@
-#include "Condition.h"
+#include "../header/Condition.h"
 
 Condition::Condition() { }
 

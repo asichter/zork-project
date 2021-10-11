@@ -1,4 +1,4 @@
-#include "Item.h"
+#include "../header/Item.h"
 
 
 Item::Item(std::string _name, std::string _status, std::string _description, std::string _writing, std::string _turnon, std::vector<Trigger*> _triggers) {

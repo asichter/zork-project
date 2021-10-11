@@ -1,5 +1,5 @@
 #ifndef ITEM_H
-#define ITEM_G
+#define ITEM_H
 
 #include "Trigger.h"
 
@@ -14,6 +14,6 @@ private:
 
 public:
     Item(std::string _name, std::string _status, std::string _description, std::string _writing, std::string _turnon, std::vector<Trigger*> _triggers);
-}
+};
 
 #endif

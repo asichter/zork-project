@@ -1,4 +1,4 @@
-#include "Action.h"
+#include "../header/Action.h"
 
 Action::Action(std::string _type) {
     type = _type;

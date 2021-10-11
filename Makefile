@@ -1,8 +1,8 @@
 EXECUTABLE=zork-project
-SRC_C=main.cpp tinyxml/tinystr.cpp tinyxml/tinyxml.cpp tinyxml/tinyxmlerror.cpp tinyxml/tinyxmlparser.cpp XMLParser.cpp
-TEST_C=main.cpp
-SRC_H=tinyxml/tinyxml.h XMLParser.h
-TARGET=main.cpp
+SRC_C=tinyxml/*.cpp source/*.cpp
+TEST_C=source/main.cpp
+SRC_H=tinyxml/*.h header/*.h
+TARGET=source/main.cpp
 CC=g++
 CFLAGS=-std=c++11 -Wall -Wvla -pedantic #-Wshadow
 SHELL=/bin/bash
@@ -15,7 +15,7 @@ ASG_TEST=test
 ASG_DEBUG=debug
 TEST_EXPECTED=expected.txt
 ASG_TEST_COVERAGE=coverage
-COVERAGE_FLAGS=-std=c++17 -lm -fprofile-arcs -ftest-coverage -DNDEBUG
+COVERAGE_FLAGS=-std=c++11 -lm -fprofile-arcs -ftest-coverage -DNDEBUG
 CLEAN_FILES=*.gcno *.c.gcov *.gcda *.gcda $(EXECUTABLE)
 
 $(EXECUTABLE): $(SRC_C) $(SRC_H)

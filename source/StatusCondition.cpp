@@ -1,4 +1,4 @@
-#include "StatusCondition.h"
+#include "../header/StatusCondition.h"
 
 StatusCondition::StatusCondition(std::string _item, std::string _status) {
     type = "status";

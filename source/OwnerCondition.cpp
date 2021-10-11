@@ -1,4 +1,4 @@
-#include "OwnerCondition.h"
+#include "../header/OwnerCondition.h"
 
 OwnerCondition::OwnerCondition(bool _has, std::string _item, std::string _owner) {
     type = "owner";
