@@ -4,7 +4,7 @@
 
 class XMLParser {
   public:
-    void dump_to_stdout(const char *);
+    void parseData(const char *);
 };
 
 #endif

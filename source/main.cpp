@@ -1,5 +1,5 @@
-#include "../tinyxml/tinyxml.h"
-#include "../header/XMLParser.h"
+#include "tinyxml/tinyxml.h"
+#include "XMLParser.h"
 #include <string>
 
 const unsigned int NUM_INDENTS_PER_SPACE=2;
@@ -118,6 +118,7 @@ void dump_to_stdout(const char* pFilename)
 }
 
 int main(int argc, char * argv[]) {
-  dump_to_stdout("studentActivity.xml");
+  XMLParser myxml;
+  myxml.parseData("studentActivity.xml");
   return 0;
 }
