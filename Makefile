@@ -4,7 +4,7 @@ TEST_C=source/main.cpp
 SRC_H=tinyxml/*.h header/*.h
 TARGET=source/main.cpp
 CC=g++
-CFLAGS=-std=c++11 -Wall -Wvla -pedantic #-Wshadow
+CFLAGS=-std=c++11 -Wall -Wvla -pedantic -DTIXML_USE_STL #-Wshadow
 SHELL=/bin/bash
 RUN=run
 TESTER=tester

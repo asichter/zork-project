@@ -7,13 +7,17 @@
 
 class Map {
 private:
-    std::vector<Room*> rooms;
+    std::string name;
+    std::string description;
+    // Border* border;
+    std::vector<Room *> rooms;
     std::vector<Item*> items;
     std::vector<Creature*> creatures;
     std::vector<Container*> containers;
 
 public:
-    Map(std::vector<Room*> _rooms, std::vector<Item*> _items, std::vector<Creature*> _creatures, std::vector<Container*> _containers);
+    Map();
+    virtual void addRoom(Room * _room);
 };
 
 #endif

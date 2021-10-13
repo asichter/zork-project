@@ -14,7 +14,16 @@ private:
     std::vector<Trigger*> triggers;
 
 public:
-    Creature(std::string _name, std::vector<std::string> _vulnerabilities, Attack* _attack, std::vector<Trigger*> _triggers);
+    Creature();
+    virtual void display();
+    
+    virtual void addVulnerability(std::string _vulnerability);
+    virtual void setAttack(Attack* _attack);
+    virtual void addTrigger(Trigger* _trigger);
+
+    virtual std::vector<std::string> getVulnerability();
+    virtual Attack* getAttack();
+    virtual std::vector<Trigger*> getTrigger();
 };
 
 #endif

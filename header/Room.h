@@ -3,28 +3,43 @@
 
 #include <string>
 #include <vector>
+#include "Thing.h"
+#include "Border.h"
 #include "Creature.h"
 #include "Container.h"
-#include "Item.h"
 #include "Trigger.h"
 
-class Room {
+class Room : public Thing {
 private:
     std::string name;
     std::string status;
     std::string type;
     std::string description;
-    std::string borderN;
-    std::string borderE;
-    std::string borderW;
-    std::string borderS;
+    std::vector<Border*> borders;
     std::vector<Item*> items;
     std::vector<Container*> containers;
     std::vector<Creature*> creatures;
     std::vector<Trigger*> triggers;
 
 public:
-    Room(std::string _name, std::string _status, std::string _type, std::string _description, std::string _borderN, std::string _borderE, std::string _borderW, std::string _borderS, std::vector<Item*> _items, std::vector<Container*> _containers, std::vector<Creature*> _creatures, std::vector<Trigger*> _triggers);
+    Room();
+    virtual void display();
+    
+    // virtual void setStatus(std::string _status);
+    // virtual void setType(std::string _type);
+    virtual void addBorder(Border* _border);
+    virtual void addItem(Item* _item);
+    virtual void addContainer(Container* _container);
+    virtual void addCreature(Creature* _creature);
+    virtual void addTrigger(Trigger* _trigger);
+
+    // virtual std::string getStatus();
+    // virtual std::string getType();
+    virtual std::vector<Border*> getBorder();
+    virtual std::vector<Item*> getItem();
+    virtual std::vector<Container*> getContainer();
+    virtual std::vector<Creature*> getCreature();
+    virtual std::vector<Trigger*> getTrigger();
 };
 
 #endif

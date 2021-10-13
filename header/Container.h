@@ -5,8 +5,9 @@
 #include <vector>
 #include "Item.h"
 #include "Trigger.h"
+#include "Thing.h"
 
-class Container {
+class Container : public Thing {
 private:
     std::string name;
     std::string status;
@@ -16,7 +17,15 @@ private:
     std::vector<Item*> items;
 
 public:
-    Container(std::string _name, std::string _status, std::string _description, std::vector<std::string> _accepts, std::vector<Trigger*> _triggers, std::vector<Item*> _items);
+    Container();
+    virtual void display();
+    virtual void addAccepts(std::string _accept);
+    virtual void addItem(Item* _item);
+    virtual void addTrigger(Trigger* _trigger);
+
+    virtual std::vector<std::string> getAccepts();
+    virtual std::vector<Trigger*> getTrigger();
+    virtual std::vector<Item*> getItem();
 };
 
 #endif

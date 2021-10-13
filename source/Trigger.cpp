@@ -1,8 +1,18 @@
 #include "../header/Trigger.h"
+#include <iostream>
+#include <string>
 
-Trigger::Trigger(std::string _type, std::string _command, std::vector<Condition*> _conditions, std::vector<std::string> _prints, std::vector<Action*> _actions) {
-    type = _type;
-    conditions = _conditions;
-    prints = _prints;
-    actions = _actions;
-}
+Trigger::Trigger() {}
+
+void Trigger::display() {  std::cout << "Trigger: " << getName() << std::endl; }
+
+void Trigger::setCommand(std::string _command) { command = _command; }
+void Trigger::addCondition(Condition* _condition) { conditions.push_back(_condition); }
+void Trigger::addPrints(std::string _print) { prints.push_back(_print); }
+void Trigger::addAction(Action* _action) { actions.push_back(_action); }
+
+std::string Trigger::getCommand() { return command; }
+std::vector<Condition*> Trigger::getCondition() { return conditions; }
+std::vector<std::string> Trigger::getPrints() { return prints; }
+std::vector<Action*> Trigger::getActions() { return actions; }
+

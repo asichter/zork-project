@@ -1,10 +1,17 @@
 #ifndef XMLParser_H_
 #define XMLParser_H_
 #include <string>
+#include "Thing.h"
+#include "Map.h"
+#include "Room.h"
+#include "../tinyxml/tinyxml.h"
+#include "../tinyxml/tinystr.h"
 
-class XMLParser {
-  public:
-    void parseData(const char *);
-};
+Border * parseBorder(TiXmlElement *);
+Container * parseContainer(TiXmlElement *);
+Item * parseItem(TiXmlElement *);
+Room * parseRoom(TiXmlElement *);
+Trigger * parseTrigger(TiXmlElement *);  
+void parseMap(const char *);
 
 #endif

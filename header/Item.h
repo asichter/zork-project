@@ -1,9 +1,10 @@
 #ifndef ITEM_H
-#define ITEM_H
+#define ITEM_G
 
 #include "Trigger.h"
+#include "Thing.h"
 
-class Item {
+class Item : public Thing {
 private:
     std::string name;
     std::string status;
@@ -13,7 +14,8 @@ private:
     std::vector<Trigger*> triggers;
 
 public:
-    Item(std::string _name, std::string _status, std::string _description, std::string _writing, std::string _turnon, std::vector<Trigger*> _triggers);
+    Item();
+    virtual void display();
 };
 
 #endif

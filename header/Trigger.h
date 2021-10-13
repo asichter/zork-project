@@ -7,8 +7,9 @@
 #include "OwnerCondition.h"
 #include "StatusCondition.h"
 #include "Action.h"
+#include "Thing.h"
 
-class Trigger {
+class Trigger : public Thing {
 private:
     std::string type;
     std::string command;
@@ -17,7 +18,18 @@ private:
     std::vector<Action*> actions;
 
 public:
-    Trigger(std::string _type, std::string _command, std::vector<Condition*> _conditions, std::vector<std::string> _prints, std::vector<Action*> _actions);
+    Trigger();
+    virtual void display();
+    
+    virtual void setCommand(std::string _command);
+    virtual void addCondition(Condition* _condition);
+    virtual void addPrints(std::string _print);
+    virtual void addAction(Action* _action);
+
+    virtual std::string getCommand();
+    virtual std::vector<Condition*> getCondition();
+    virtual std::vector<std::string> getPrints();
+    virtual std::vector<Action*> getActions();
 };
 
 #endif

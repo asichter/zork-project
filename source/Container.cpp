@@ -1,10 +1,15 @@
 #include "../header/Container.h"
+#include <iostream>
+#include <string>
 
-Container::Container(std::string _name, std::string _status, std::string _description, std::vector<std::string> _accepts, std::vector<Trigger*> _triggers, std::vector<Item*> _items) {
-    name = _name;
-    status = _status;
-    description = _description;
-    accepts = _accepts;
-    triggers = _triggers;
-    items = _items;
-}
+Container::Container() {}
+
+void Container::display() { std::cout << "Container: " << getName() << std::endl; }
+
+void Container::addAccepts(std::string _accept) {accepts.push_back(_accept); }
+void Container::addItem(Item* _item) { items.push_back(_item); }
+void Container::addTrigger(Trigger* _trigger) { triggers.push_back(_trigger); }
+
+std::vector<std::string> Container::getAccepts() { return accepts; }
+std::vector<Item*> Container::getItem() { return items; }
+std::vector<Trigger*> Container::getTrigger() { return triggers; }
