@@ -10,7 +10,7 @@ protected:
 public:
     Condition();
     virtual std::string getType();
-    virtual bool conditionMet( ) = 0;
+    virtual void display();
 };
 
 #endif

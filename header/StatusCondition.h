@@ -5,12 +5,13 @@
 
 class StatusCondition : public Condition {
 private:
-    std::string item;
+    std::string object;
     std::string status;
 
 public:
-    StatusCondition(std::string _item, std::string _status);
-    bool conditionMet(std::string _item, std::string _status);
+    StatusCondition(std::string _object, std::string _status);
+    bool conditionMet(std::string _object, std::string _status);
+    void display();
 };
 
 #endif

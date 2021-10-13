@@ -18,6 +18,9 @@ private:
 public:
     Map();
     virtual void addRoom(Room * _room);
+    virtual void addItem(Item * _item);
+    virtual void addCreature(Creature * _creature);
+    virtual void addContainer(Container* _container);
 };
 
 #endif

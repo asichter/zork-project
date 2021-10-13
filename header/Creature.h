@@ -5,10 +5,12 @@
 #include <vector>
 #include "Attack.h"
 #include "Trigger.h"
+#include "Thing.h"
 
-class Creature {
+class Creature : public Thing {
 private:
     std::string name;
+    std::string status;
     std::vector<std::string> vulnerabilities;
     Attack* attack;
     std::vector<Trigger*> triggers;
@@ -18,7 +20,7 @@ public:
     virtual void display();
     
     virtual void addVulnerability(std::string _vulnerability);
-    virtual void setAttack(Attack* _attack);
+    virtual void addAttack(Attack* _attack);
     virtual void addTrigger(Trigger* _trigger);
 
     virtual std::vector<std::string> getVulnerability();

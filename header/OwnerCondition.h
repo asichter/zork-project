@@ -6,12 +6,13 @@
 class OwnerCondition : public Condition {
 private:
     bool has;
-    std::string item;
+    std::string object;
     std::string owner;
 
 public:
-    OwnerCondition(bool _has, std::string _item, std::string _owner);
-    bool conditionMet(bool _has, std::string _item, std::string _owner);
+    OwnerCondition(bool _has, std::string _object, std::string _owner);
+    bool conditionMet(bool _has, std::string _object, std::string _owner);
+    void display();
 };
 
 #endif

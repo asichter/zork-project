@@ -7,9 +7,9 @@ Creature::Creature() {}
 void Creature::display() { std::cout << "Creature: " << getName() << std::endl; }
 
 void Creature::addVulnerability(std::string _vulnerability) { vulnerabilities.push_back(_vulnerability); }
-void Creature::setAttack(Attack* _attack) { attack = _attack; }
+void Creature::addAttack(Attack* _attack) { attack = _attack; }
 void Creature::addTrigger(Trigger* _trigger) { triggers.push_back(_trigger); }
 
-std::vector<std::string> getVulnerability() { return vulnerabilities; }
-Attack * getAttack() { return attack; }
-std::vector<Trigger*> getTrigger() { return triggers; }
+std::vector<std::string> Creature::getVulnerability() { return vulnerabilities; }
+Attack * Creature::getAttack() { return attack; }
+std::vector<Trigger*> Creature::getTrigger() { return triggers; }

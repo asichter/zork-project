@@ -1,16 +1,20 @@
 #include "../header/OwnerCondition.h"
+#include <iostream>
+#include <string>
 
-OwnerCondition::OwnerCondition(bool _has, std::string _item, std::string _owner) {
+OwnerCondition::OwnerCondition(bool _has, std::string _object, std::string _owner) {
     type = "owner";
     has = _has;
-    item = _item;
+    object = _object;
     owner = _owner;
 }
 
-bool OwnerCondition::conditionMet(bool _has, std::string _item, std::string _owner) {
-    if(_has != has || _item != item || _owner != owner) {
+bool OwnerCondition::conditionMet(bool _has, std::string _object, std::string _owner) {
+    if(_has != has || _object != object || _owner != owner) {
         return false;
     }
 
     return true;
 }
+
+void OwnerCondition::display() { std::cout << "Condition" << getType() << std::endl;}

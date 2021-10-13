@@ -25,16 +25,12 @@ public:
     Room();
     virtual void display();
     
-    // virtual void setStatus(std::string _status);
-    // virtual void setType(std::string _type);
     virtual void addBorder(Border* _border);
     virtual void addItem(Item* _item);
     virtual void addContainer(Container* _container);
     virtual void addCreature(Creature* _creature);
     virtual void addTrigger(Trigger* _trigger);
 
-    // virtual std::string getStatus();
-    // virtual std::string getType();
     virtual std::vector<Border*> getBorder();
     virtual std::vector<Item*> getItem();
     virtual std::vector<Container*> getContainer();

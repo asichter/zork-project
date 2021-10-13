@@ -118,6 +118,7 @@ void dump_to_stdout(const char* pFilename)
 }
 
 int main(int argc, char * argv[]) {
-  parseMap("samples/roomsample.xml");
-  return 0;
+    parseMap(argv[1]); 
+    // parseMap("samples/roomsample.xml");
+    return 0;
 }

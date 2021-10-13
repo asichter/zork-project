@@ -4,7 +4,6 @@
 #include <string>
 #include <vector>
 #include "Item.h"
-#include "Trigger.h"
 #include "Thing.h"
 
 class Container : public Thing {

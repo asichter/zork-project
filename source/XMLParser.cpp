@@ -2,31 +2,6 @@
 #include <string>
 #include <iostream>
 
-Action * parseAction(TiXmlElement * element) 
-{
-    Action * action = new Action();
-    for (TiXmlNode* node = element->FirstChild(); node != NULL; node = node->NextSibling()) {
-        TiXmlElement * childElement = node->ToElement();
-        if (childElement != NULL) 
-        {
-            std::string name = childElement->ValueStr();
-            std::string value = "";
-            if (childElement->GetText() != NULL)
-                value = childElement->GetText();
-
-            if (name=="item")
-                action->setItem(value);
-            else if (name=="container")
-                action->setContainer(value);
-            else if (name=="status")
-                action->setStatus(value);
-            else if (name=="target")
-                action->setTarget(value);
-        }
-    }
-    return action;
-}
-
 Attack * parseAttack(TiXmlElement * element) 
 {
     Attack * attack = new Attack();
@@ -40,7 +15,10 @@ Attack * parseAttack(TiXmlElement * element)
             if (childElement->GetText() != NULL)
                 value = childElement->GetText();
 
-            
+            if (name == "action")
+                attack->addAction(value);
+            else if (name == "print")
+                attack->setPrint(value); 
         }
     }
     attack->display();
@@ -70,7 +48,45 @@ Border * parseBorder(TiXmlElement * element)
     return border;   
 }
 
-// Condition * parseCondition(TiXmlElement * element) {}
+Condition * parseCondition(TiXmlElement * element) 
+{
+    Condition * condition = new Condition();
+    // OwnerCondition * ownercondition = NULL;
+    // StatusCondition * statuscondition = NULL;
+    std::string has = "";
+    std::string object = "";
+    std::string owner = "";
+    std::string status = "";
+
+    for (TiXmlNode* node = element->FirstChild(); node != NULL; node = node->NextSibling()) 
+    {
+        TiXmlElement * childElement = node->ToElement();
+        if (childElement != NULL)
+        { 
+            std::string name = childElement->ValueStr();
+            std::string value = "";
+            if (childElement->GetText() != NULL)
+                value = childElement->GetText();
+
+            if (name == "has")
+                has = value;
+            else if (name == "object")
+                object = value;
+            else if (name == "owner")
+                owner = value;
+            else if (name == "status")
+                status = value;
+        }
+    }
+    if (has != "")
+        condition = new OwnerCondition((has == "y"), object, owner);
+    else
+        condition = new StatusCondition(object, status);
+
+    condition->display();
+    return condition;
+}
+
 Container * parseContainer(TiXmlElement * element) {
     Container * container = new Container();
     for (TiXmlNode* node = element->FirstChild(); node != NULL; node = node->NextSibling()) 
@@ -124,8 +140,8 @@ Creature * parseCreature(TiXmlElement * element)
                 creature->addTrigger(parseTrigger(childElement));
         }
     }
-    room->display();
-    return room;
+    creature->display();
+    return creature;
 }
 
 Item * parseItem(TiXmlElement * element) {
@@ -142,24 +158,21 @@ Item * parseItem(TiXmlElement * element) {
 
             if (name == "name")
                 item->setName(value);
-            // else if (name == "writing")
-            //     item->setWriting(value);
-            // else if (name == "status")
-            //     item->setStatus(value);
-            // else if (name == "description")
-            //     item->setDescription(value);
-            // else if (name == "turnon")
-            //     item->addTurnon(parseTurnon(childElement));
-            // else if (name == "trigger")
-            //     item->addTrigger(parseTrigger(childElement));
+            else if (name == "writing")
+                item->setWriting(value);
+            else if (name == "status")
+                item->setStatus(value);
+            else if (name == "description")
+                item->setDescription(value);
+            else if (name == "turnon")
+                item->setTurnon(parseTurnon(childElement));
+            else if (name == "trigger")
+                item->addTrigger(parseTrigger(childElement));
         }
     }
     item->display();
     return item;
 }
-
-// Map * parseMap(TiXmlElement * element) {}
-// OwnerCondition * parseOwnerCondition(TiXmlElement * element) {}
 
 Room * parseRoom(TiXmlElement * element) 
 { 
@@ -186,19 +199,17 @@ Room * parseRoom(TiXmlElement * element)
                 room->addBorder(parseBorder(childElement));
             else if (name == "container")
                 room->addContainer(parseContainer(childElement));
-            // else if (name == "creature")
-            //     room->addCreature(parseCreature(childElement));
-            // else if (name == "item")
-            //     room->addItem(parseItem(childElement))
-            // else if (name == "trigger")
-            //     room->addTrigger(parseTrigger(childElement));         
+            else if (name == "creature")
+                room->addCreature(parseCreature(childElement));
+            else if (name == "item")
+                room->addItem(parseItem(childElement));
+            else if (name == "trigger")
+                room->addTrigger(parseTrigger(childElement));         
         }
     }
     room->display();
     return room;
 }
-
-// StatusCondition * parseStatusCondition(TiXmlElement * element) {}
 
 Trigger * parseTrigger(TiXmlElement * element) 
 {
@@ -213,12 +224,44 @@ Trigger * parseTrigger(TiXmlElement * element)
             if (childElement->GetText() != NULL)
                 value = childElement->GetText();
 
-            if 
+            if (name == "type")
+                trigger->setType(value);
+            else if (name == "command")
+                trigger->setCommand(value);
+            else if (name == "print")
+                trigger->addPrints(value);
+            else if (name == "action")
+                trigger->addAction(value);
+            else if (name == "condition")
+                trigger->addCondition(parseCondition(element));
         }
     }
     trigger->display();
     return trigger;
 }
+
+Turnon * parseTurnon(TiXmlElement * element)
+{
+    Turnon * turnon = new Turnon();
+    for (TiXmlNode* node = element->FirstChild(); node != NULL; node = node->NextSibling()) 
+    {
+        TiXmlElement * childElement = node->ToElement();
+        if (childElement != NULL)
+        { 
+            std::string name = childElement->ValueStr();
+            std::string value = "";
+            if (childElement->GetText() != NULL)
+                value = childElement->GetText();
+
+            if (name == "print")
+                turnon->setPrint(value);
+            else if (name == "action")
+                turnon->addAction(value);
+        }
+    }
+    return turnon;
+}
+
     //  *  = new ();
     // for (TiXmlNode* node = element->FirstChild(); node != NULL; node = node->NextSibling()) 
     // {
@@ -255,10 +298,10 @@ void parseMap(const char * filename) {
                 map->addRoom(parseRoom(childElement));
             else if (name == "item")
               map->addItem(parseItem(childElement));
-                // else if (name == "creature")
-                //   map->addCreature(parseCreature(childElement));
-                // else if (name == "container")
-                //   map->addContainer(parseContainer(childElement));
+            else if (name == "creature")
+                map->addCreature(parseCreature(childElement));
+                else if (name == "container")
+                  map->addContainer(parseContainer(childElement));
         }
     }
     

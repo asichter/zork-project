@@ -1,29 +1,31 @@
-#ifndef ACTION_H
-#define ACTION_H
+// #ifndef ACTION_H_
+// #define ACTION_H_
 
-#include <string>
+// #include <string>
+// #include "Container.h"
+// #include "Thing.h"
 
-class Action {
-protected:
-    std::string type;
-    std::string item;
-    std::string container;
-    std::string status;
-    std::string target;
+// class Action {
+// protected:
+//     std::string type;
+//     std::string status;
+//     std::string target;
+//     Item * item;
+//     Container * container;
+    
 
-public:
-    Action(std::string _type);
+// public:
+//     Action();
 
-    virtual void setItem(std::string _item);
-    virtual void setContainter(std::string _container);
-    virtual void setStatus(std::string _status);
-    virtual void setTarget(std::string _target);
+//     virtual void display();
 
-    virtual std::string getType();
-    virtual std::string getItem();
-    virtual std::string getContainer();
-    virtual std::string getStatus();
-    virtual std::string getTarget();
-};
+//     virtual void setItem(Item* _item);
+//     virtual void setContainer(Container* _container);
+//     virtual void setTarget(std::string _target);
 
-#endif
+//     virtual Item* getItem();
+//     virtual Container* getContainer();
+//     virtual std::string getTarget();
+// };
+
+// #endif

@@ -5,7 +5,7 @@
 Room::Room() {
     name = "";
     status = "";
-    type = "";
+    type = "regular";
     description = "";
 }
 
