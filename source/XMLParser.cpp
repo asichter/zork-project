@@ -259,6 +259,7 @@ Turnon * parseTurnon(TiXmlElement * element)
                 turnon->addAction(value);
         }
     }
+    turnon-display();
     return turnon;
 }
 
@@ -306,4 +307,5 @@ void parseMap(const char * filename) {
     }
     
   }
+  map->display();
 }

@@ -3,8 +3,9 @@
 #include <string>
 
 Attack::Attack() {}
+Attack::~Attack() {}
 
-void Attack::display() { std::cout << "Attack: " << std::endl; }
+void Attack::display() { std::cout << "Attack: " <<  getPrint() << std::endl; }
 
 void Attack::addCondition(Condition* _condition) { conditions.push_back(_condition); }
 void Attack::setPrint(std::string _print) { print = _print; }

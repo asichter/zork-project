@@ -17,7 +17,7 @@ TEST_EXPECTED=expected.txt
 ASG_TEST_COVERAGE=coverage
 COVERAGE_FLAGS=-std=c++11 -lm -fprofile-arcs -ftest-coverage -DNDEBUG
 CLEAN_FILES=*.gcno *.c.gcov *.gcda *.gcda $(EXECUTABLE)
-ARGS= samples/triggersample.xml
+ARGS= 
 
 $(EXECUTABLE): $(SRC_C) $(SRC_H)
 	$(CC) -o $(EXECUTABLE) $(SRC_C) $(CFLAGS) ; ./$(EXECUTABLE) $(ARGS)

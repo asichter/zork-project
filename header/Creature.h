@@ -17,6 +17,7 @@ private:
 
 public:
     Creature();
+    ~Creature();
     virtual void display();
     
     virtual void addVulnerability(std::string _vulnerability);

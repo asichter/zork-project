@@ -3,6 +3,7 @@
 #include <string>
 
 Container::Container() {}
+Container::~Container() {}
 
 void Container::display() { std::cout << "Container: " << getName() << std::endl; }
 

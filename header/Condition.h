@@ -9,6 +9,7 @@ protected:
 
 public:
     Condition();
+    ~Condition();
     virtual std::string getType();
     virtual void display();
 };

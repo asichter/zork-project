@@ -17,6 +17,7 @@ private:
 
 public:
     Container();
+    ~Container(); 
     virtual void display();
     virtual void addAccepts(std::string _accept);
     virtual void addItem(Item* _item);

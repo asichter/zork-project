@@ -3,6 +3,7 @@
 #include <string>
 
 Creature::Creature() {}
+Creature::~Creature() {}
 
 void Creature::display() { std::cout << "Creature: " << getName() << std::endl; }
 

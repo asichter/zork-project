@@ -13,6 +13,8 @@ private:
 
 public:
     Attack();
+    ~Attack();
+    
     virtual void display();
     
     virtual void addCondition(Condition *);

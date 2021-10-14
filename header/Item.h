@@ -16,6 +16,8 @@ private:
 
 public:
     Item();
+    ~Item();
+    
     virtual void display();
 
     virtual void setWriting(std::string _writing);

@@ -11,8 +11,10 @@ private:
 
 public:
     Border();
+    ~Border();
     virtual void setDirection(std::string _direction);
     virtual void display();
+    virtual void getDirection();
 };
 
 #endif

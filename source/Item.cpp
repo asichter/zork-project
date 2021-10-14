@@ -3,6 +3,7 @@
 #include <string>
 
 Item::Item() {}
+Item::~Item() {}
 void Item::display() { std::cout << "Item: " << getName() << std::endl; }
 
 void Item::setWriting(std::string _writing) { writing = _writing; }
