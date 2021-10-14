@@ -20,7 +20,7 @@ CLEAN_FILES=*.gcno *.c.gcov *.gcda *.gcda $(EXECUTABLE)
 ARGS=samples/triggersample.xml
 
 $(EXECUTABLE): $(SRC_C) $(SRC_H)
-	$(CC) -o $(EXECUTABLE) $(SRC_C) $(CFLAGS) #; ./$(EXECUTABLE) $(ARGS)
+	$(CC) -o $(EXECUTABLE) $(SRC_C) $(CFLAGS) ; ./$(EXECUTABLE) $(ARGS)
 
 $(RUN): $(EXECUTABLE)
 	./$(EXECUTABLE)

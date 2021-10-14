@@ -317,5 +317,4 @@ void parseMap(const char * filename) {
   }
   map->display();
   map->printRooms();
-  std::cout << "got here" << std::endl;
 }
