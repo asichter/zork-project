@@ -307,4 +307,5 @@ void parseMap(const char * filename) {
     
   }
   map->display();
+  map->printRooms();
 }

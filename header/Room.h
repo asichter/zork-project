@@ -36,6 +36,14 @@ public:
     virtual std::vector<Container*> getContainer();
     virtual std::vector<Creature*> getCreature();
     virtual std::vector<Trigger*> getTrigger();
+
+    virtual void printItems();
+    virtual void printCreatures();
+    virtual void printContainers();
+    virtual void printTriggers();
+    virtual void printBorders();
+
+    virtual void printRoom();
 };
 
 #endif

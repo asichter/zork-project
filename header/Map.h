@@ -25,6 +25,11 @@ public:
     virtual void addContainer(Container* _container);
 
     virtual std::vector<Room*> getRooms();
+    virtual std::vector<Item*> getItems();
+    virtual std::vector<Creature*> getCreatures();
+    virtual std::vector<Container*> getContainers();
+
+    virtual void printRooms();
 };
 
 #endif

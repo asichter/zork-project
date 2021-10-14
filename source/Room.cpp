@@ -14,18 +14,54 @@ void Room::display()
     if(getName() != "") std::cout << "Room: " << this->getName() << std::endl;
 }
 
-// void Room::setStatus(std::string _status) { status = _status; }
-// void Room::setType(std::string _type) { type = _type; }
 void Room::addBorder(Border* _border) { borders.push_back(_border); }
 void Room::addItem(Item* _item) { items.push_back(_item); }
 void Room::addContainer(Container* _container) { containers.push_back(_container); }
 void Room::addCreature(Creature* _creature) { creatures.push_back(_creature); }
 void Room::addTrigger(Trigger* _trigger) { triggers.push_back(_trigger); }
 
-// std::string Room::getStatus() { return status; }
-// std::string Room::getType() { return type; }
 std::vector<Border*> Room::getBorder() { return borders; }
 std::vector<Item*> Room::getItem() { return items; }
 std::vector<Container*> Room::getContainer() { return containers; }
 std::vector<Creature*> Room::getCreature() { return creatures; }
 std::vector<Trigger*> Room::getTrigger() { return triggers; }
+
+void Room::printItems() {
+    for(unsigned int i = 0; i < items.size(); i++) {
+        items[i]->display();
+    }
+}
+
+void Room::printCreatures() {
+    for(unsigned int i = 0; i < creatures.size(); i++) {
+        creatures[i]->display();
+    }
+}
+
+void Room::printContainers() {
+    for(unsigned int i = 0; i < containers.size(); i++) {
+        containers[i]->display();
+    }
+}
+
+void Room::printTriggers() {
+    for(unsigned int i = 0; i < triggers.size(); i++) {
+        triggers[i]->display();
+    }
+}
+
+void Room::printBorders() {
+    for(unsigned int i = 0; i < borders.size(); i++) {
+        borders[i]->display();
+    }
+}
+
+void Room::printRoom() {
+    display();
+    printItems();
+    printCreatures();
+    printContainers();
+    printBorders();
+    printTriggers();
+    std::cout << "end of room\n" << std::endl;
+}
