@@ -259,7 +259,7 @@ Turnon * parseTurnon(TiXmlElement * element)
                 turnon->addAction(value);
         }
     }
-    turnon-display();
+    turnon->display();
     return turnon;
 }
 
@@ -283,10 +283,9 @@ void parseMap(const char * filename) {
 
   // fetch root elem
   TiXmlElement * rootElement = doc.RootElement();
+  Map * map = new Map();
   if (rootElement != NULL && rootElement->ValueStr() == "map") 
   {
-    
-    Map * map = new Map();
     for (TiXmlNode* node = rootElement->FirstChild(); node != NULL; node = node->NextSibling()) 
     {
         

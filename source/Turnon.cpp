@@ -9,3 +9,5 @@ void Turnon::addAction(std::string _action) { actions.push_back(_action); }
 
 std::string Turnon::getPrint() { return print; }
 std::vector<std::string> Turnon::getAction() { return actions; }
+
+void Turnon::display() { std::cout << "Turnon: found " << getAction().size() << " actions" << std::endl; }

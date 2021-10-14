@@ -3,9 +3,10 @@
 
 #include <string>
 #include <vector>
+#include "Thing.h"
 #include "Room.h"
 
-class Map {
+class Map : public Thing {
 private:
     std::string name;
     std::string description;
@@ -17,6 +18,7 @@ private:
 
 public:
     Map();
+    void display();
     virtual void addRoom(Room * _room);
     virtual void addItem(Item * _item);
     virtual void addCreature(Creature * _creature);

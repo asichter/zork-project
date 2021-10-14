@@ -4,8 +4,9 @@
 #include <string>
 #include <vector>
 #include <iostream>
+#include "Thing.h"
 
-class Turnon {
+class Turnon : public Thing {
 private:
     std::string print;
     std::vector<std::string> actions;
@@ -15,6 +16,7 @@ public:
     
     virtual void setPrint(std::string _print);
     virtual void addAction(std::string _action);
+    void display();
 
     std::string getPrint();
     std::vector<std::string> getAction();
