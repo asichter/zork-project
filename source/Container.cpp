@@ -10,7 +10,9 @@ void Container::display() { if(getName() != "") std::cout << "Container: " << ge
 void Container::addAccepts(std::string _accept) {accepts.push_back(_accept); }
 void Container::addItem(Item* _item) { items.push_back(_item); }
 void Container::addTrigger(Trigger* _trigger) { triggers.push_back(_trigger); }
+void Container::setName(std::string _name) { name = _name; }
 
 std::vector<std::string> Container::getAccepts() { return accepts; }
 std::vector<Item*> Container::getItem() { return items; }
 std::vector<Trigger*> Container::getTrigger() { return triggers; }
+std::string Container::getName() { return name; }

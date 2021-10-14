@@ -15,7 +15,7 @@ std::vector<Container*> Map::getContainers() { return containers; }
 void Map::display() { std::cout << "Map: found map with " << getRooms().size() << " rooms" << std::endl; }
 
 void Map::printRooms() {
-    std::cout << '\n' << std::endl;
+    std::cout << std::endl;
     for(unsigned int i = 0; i < rooms.size(); i++) {
         rooms[i]->printRoom();
     }

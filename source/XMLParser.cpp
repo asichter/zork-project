@@ -197,12 +197,21 @@ Room * parseRoom(TiXmlElement * element)
                 room->setType(value);
             else if (name == "border")
                 room->addBorder(parseBorder(childElement));
-            else if (name == "container")
-                room->addContainer(parseContainer(childElement));
-            else if (name == "creature")
-                room->addCreature(parseCreature(childElement));
-            else if (name == "item")
-                room->addItem(parseItem(childElement));
+            else if (name == "container") {
+                Container* container = new Container();
+                container->setName(value);
+                room->addContainer(container);
+            }
+            else if (name == "creature") {
+                Creature* creature = new Creature();
+                creature->setName(value);
+                room->addCreature(creature);
+            }
+            else if (name == "item") {
+                Item* item = new Item();
+                item->setName(value);
+                room->addItem(item);
+            }
             else if (name == "trigger")
                 room->addTrigger(parseTrigger(childElement));         
         }
@@ -308,4 +317,5 @@ void parseMap(const char * filename) {
   }
   map->display();
   map->printRooms();
+  std::cout << "got here" << std::endl;
 }

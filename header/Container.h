@@ -22,10 +22,12 @@ public:
     virtual void addAccepts(std::string _accept);
     virtual void addItem(Item* _item);
     virtual void addTrigger(Trigger* _trigger);
+    virtual void setName(std::string _name);
 
     virtual std::vector<std::string> getAccepts();
     virtual std::vector<Trigger*> getTrigger();
     virtual std::vector<Item*> getItem();
+    std::string getName();
 };
 
 #endif

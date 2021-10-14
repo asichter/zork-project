@@ -27,24 +27,28 @@ std::vector<Creature*> Room::getCreature() { return creatures; }
 std::vector<Trigger*> Room::getTrigger() { return triggers; }
 
 void Room::printItems() {
+    std::cout << "no. if items: " << items.size() << std::endl;
     for(unsigned int i = 0; i < items.size(); i++) {
         items[i]->display();
     }
 }
 
 void Room::printCreatures() {
+    std::cout << "no. if creatures: " << creatures.size() << std::endl;
     for(unsigned int i = 0; i < creatures.size(); i++) {
         creatures[i]->display();
     }
 }
 
 void Room::printContainers() {
+    std::cout << "no. if containers: " << containers.size() << std::endl;
     for(unsigned int i = 0; i < containers.size(); i++) {
         containers[i]->display();
     }
 }
 
 void Room::printTriggers() {
+    std::cout << "no. if triggers: " << triggers.size() << std::endl;
     for(unsigned int i = 0; i < triggers.size(); i++) {
         triggers[i]->display();
     }
