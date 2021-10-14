@@ -4,7 +4,7 @@
 
 Trigger::Trigger() {}
 
-void Trigger::display() {  std::cout << "Trigger: " << getName() << std::endl; }
+void Trigger::display() {  if(getActions().size() != 0) std::cout << "Trigger: found trigger with " << getActions().size() << " action(s)" << std::endl; }
 
 void Trigger::setCommand(std::string _command) { command = _command; }
 void Trigger::addCondition(Condition* _condition) { conditions.push_back(_condition); }

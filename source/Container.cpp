@@ -5,7 +5,7 @@
 Container::Container() {}
 Container::~Container() {}
 
-void Container::display() { std::cout << "Container: " << getName() << std::endl; }
+void Container::display() { if(getName() != "") std::cout << "Container: " << getName() << std::endl; }
 
 void Container::addAccepts(std::string _accept) {accepts.push_back(_accept); }
 void Container::addItem(Item* _item) { items.push_back(_item); }

@@ -23,6 +23,8 @@ public:
     virtual void addItem(Item * _item);
     virtual void addCreature(Creature * _creature);
     virtual void addContainer(Container* _container);
+
+    virtual std::vector<Room*> getRooms();
 };
 
 #endif

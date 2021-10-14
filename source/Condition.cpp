@@ -6,4 +6,4 @@ Condition::Condition() {}
 Condition::~Condition() {}
 
 std::string Condition::getType() { return type; }
-void Condition::display() { std::cout << "Condition: " << getType() << std::endl; }
+void Condition::display() { if(getType() != "") std::cout << "Condition: " << getType() << std::endl; }

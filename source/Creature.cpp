@@ -5,7 +5,7 @@
 Creature::Creature() {}
 Creature::~Creature() {}
 
-void Creature::display() { std::cout << "Creature: " << getName() << std::endl; }
+void Creature::display() { if(getName() != "") std::cout << "Creature: " << getName() << std::endl; }
 
 void Creature::addVulnerability(std::string _vulnerability) { vulnerabilities.push_back(_vulnerability); }
 void Creature::addAttack(Attack* _attack) { attack = _attack; }

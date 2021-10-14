@@ -4,7 +4,7 @@
 
 Item::Item() {}
 Item::~Item() {}
-void Item::display() { std::cout << "Item: " << getName() << std::endl; }
+void Item::display() { if(getName() != "") std::cout << "Item: " << getName() << std::endl; }
 
 void Item::setWriting(std::string _writing) { writing = _writing; }
 void Item::setTurnon(Turnon* _turnon) { turnon = _turnon; }

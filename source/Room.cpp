@@ -11,7 +11,7 @@ Room::Room() {
 
 void Room::display() 
 {
-    std::cout << "Room: " << this->getName() << std::endl;
+    if(getName() != "") std::cout << "Room: " << this->getName() << std::endl;
 }
 
 // void Room::setStatus(std::string _status) { status = _status; }
