@@ -118,7 +118,10 @@ void dump_to_stdout(const char* pFilename)
 }
 
 int main(int argc, char * argv[]) {
+	if(argc != 2) {
+		std::cout << "No XML file specified. Please specify an XML file as an argument to this program." << std::endl;
+		return 0;
+	}
     parseMap(argv[1]); 
-    // parseMap("samples/roomsample.xml");
     return 0;
 }
