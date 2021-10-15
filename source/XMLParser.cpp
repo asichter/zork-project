@@ -2,7 +2,7 @@
 #include <string>
 #include <iostream>
 
-Attack * parseAttack(TiXmlElement * element) 
+Attack * XMLParser::parseAttack(TiXmlElement * element) 
 {
     Attack * attack = new Attack();
     for (TiXmlNode* node = element->FirstChild(); node != NULL; node = node->NextSibling()) 
@@ -25,7 +25,7 @@ Attack * parseAttack(TiXmlElement * element)
     return attack;
 }
 
-Border * parseBorder(TiXmlElement * element) 
+Border * XMLParser::parseBorder(TiXmlElement * element) 
 {
     Border * border = new Border();
     for (TiXmlNode* node = element->FirstChild(); node != NULL; node = node->NextSibling()) 
@@ -48,7 +48,7 @@ Border * parseBorder(TiXmlElement * element)
     return border;   
 }
 
-Condition * parseCondition(TiXmlElement * element) 
+Condition * XMLParser::parseCondition(TiXmlElement * element) 
 {
     Condition * condition = new Condition();
     // OwnerCondition * ownercondition = NULL;
@@ -87,7 +87,7 @@ Condition * parseCondition(TiXmlElement * element)
     return condition;
 }
 
-Container * parseContainer(TiXmlElement * element) {
+Container * XMLParser::parseContainer(TiXmlElement * element) {
     Container * container = new Container();
     for (TiXmlNode* node = element->FirstChild(); node != NULL; node = node->NextSibling()) 
     {
@@ -117,7 +117,7 @@ Container * parseContainer(TiXmlElement * element) {
     return container;
 }
 
-Creature * parseCreature(TiXmlElement * element) 
+Creature * XMLParser::parseCreature(TiXmlElement * element) 
 {
     Creature * creature = new Creature();
     for (TiXmlNode* node = element->FirstChild(); node != NULL; node = node->NextSibling()) 
@@ -144,7 +144,7 @@ Creature * parseCreature(TiXmlElement * element)
     return creature;
 }
 
-Item * parseItem(TiXmlElement * element) {
+Item * XMLParser::parseItem(TiXmlElement * element) {
     Item * item = new Item();
     for (TiXmlNode* node = element->FirstChild(); node != NULL; node = node->NextSibling()) 
     {
@@ -174,7 +174,7 @@ Item * parseItem(TiXmlElement * element) {
     return item;
 }
 
-Room * parseRoom(TiXmlElement * element) 
+Room * XMLParser::parseRoom(TiXmlElement * element) 
 { 
     Room * room = new Room();
     for (TiXmlNode* node = element->FirstChild(); node != NULL; node = node->NextSibling()) 
@@ -220,7 +220,7 @@ Room * parseRoom(TiXmlElement * element)
     return room;
 }
 
-Trigger * parseTrigger(TiXmlElement * element) 
+Trigger * XMLParser::parseTrigger(TiXmlElement * element) 
 {
     Trigger * trigger = new Trigger();
     for (TiXmlNode* node = element->FirstChild(); node != NULL; node = node->NextSibling()) 
@@ -249,7 +249,7 @@ Trigger * parseTrigger(TiXmlElement * element)
     return trigger;
 }
 
-Turnon * parseTurnon(TiXmlElement * element)
+Turnon * XMLParser::parseTurnon(TiXmlElement * element)
 {
     Turnon * turnon = new Turnon();
     for (TiXmlNode* node = element->FirstChild(); node != NULL; node = node->NextSibling()) 
@@ -286,7 +286,7 @@ Turnon * parseTurnon(TiXmlElement * element)
     // }
     // return ;
 
-void parseMap(const char * filename) {
+void XMLParser::parseMap(const char * filename) {
   TiXmlDocument doc(filename);
   doc.LoadFile();
 
@@ -309,8 +309,8 @@ void parseMap(const char * filename) {
               map->addItem(parseItem(childElement));
             else if (name == "creature")
                 map->addCreature(parseCreature(childElement));
-                else if (name == "container")
-                  map->addContainer(parseContainer(childElement));
+            else if (name == "container")
+                map->addContainer(parseContainer(childElement));
         }
     }
     
