@@ -1,6 +1,36 @@
 #include "../header/XMLParser.h"
 #include <string>
 #include <iostream>
+#include <vector>
+
+void XMLParser::addItem(Item* item)
+{
+    // std::cout << "item added" << std::endl;
+    items.push_back(item);
+}
+
+void XMLParser::addCreature(Creature * creature)
+{
+    creatures.push_back(creature);
+}
+
+void XMLParser::addContainer(Container * container)
+{
+    containers.push_back(container);
+}
+
+void XMLParser::printVectors()
+{   
+    std::cout << "\nItems: " << items.size() << std::endl;
+    for (Item* i : items)
+        i->printAttrs();
+    std::cout << "\nCreatures: " << creatures.size() << std::endl;
+    for (Creature* c : creatures)
+        c->printAttrs();
+    std::cout << "\nContainers: " << containers.size() << std::endl;
+    for (Container* cn : containers)
+        cn->display();
+}
 
 Attack * XMLParser::parseAttack(TiXmlElement * element) 
 {
@@ -108,12 +138,23 @@ Container * XMLParser::parseContainer(TiXmlElement * element) {
             else if (name == "accepts")
                 container->addAccepts(value);
             else if (name == "trigger")
-                container->addTrigger(parseTrigger(element));
+                container->addTrigger(parseTrigger(childElement));
             else if (name == "item")
-                container->addItem(parseItem(element));
+            {
+                Item* item = new Item();
+                item->setName(value);
+                container->addItem(item);
+                item->display();
+                // container->addItem(parseItem(childElement));
+            }
+                
         }
     }
     container->display();
+    bool inArray = 0;
+    for (Container* c : containers) { if (c->getName() == container->getName()) inArray = 1; }
+    if (!inArray)
+        addContainer(container);
     return container;
 }
 
@@ -141,6 +182,10 @@ Creature * XMLParser::parseCreature(TiXmlElement * element)
         }
     }
     creature->display();
+    bool inArray = 0;
+    for (Creature* c : creatures) { if (c->getName() == creature->getName()) inArray = 1; }
+    if (!inArray)
+        addCreature(creature);
     return creature;
 }
 
@@ -171,6 +216,10 @@ Item * XMLParser::parseItem(TiXmlElement * element) {
         }
     }
     item->display();
+    bool inArray = 0;
+    for (Item* c : items) { if (c->getName() == item->getName()) inArray = 1; }
+    if (!inArray)
+        addItem(item);
     return item;
 }
 
@@ -198,19 +247,28 @@ Room * XMLParser::parseRoom(TiXmlElement * element)
             else if (name == "border")
                 room->addBorder(parseBorder(childElement));
             else if (name == "container") {
+                // room->addContainer(parseContainer(childElement));
                 Container* container = new Container();
                 container->setName(value);
                 room->addContainer(container);
+                container->display();
+                addContainer(container);
             }
             else if (name == "creature") {
+                // room->addCreature(parseCreature(childElement));
                 Creature* creature = new Creature();
                 creature->setName(value);
                 room->addCreature(creature);
+                creature->display();
+                addCreature(creature);
             }
             else if (name == "item") {
+                // room->addItem(parseItem(childElement));
                 Item* item = new Item();
                 item->setName(value);
                 room->addItem(item);
+                item->display();
+                addItem(item);
             }
             else if (name == "trigger")
                 room->addTrigger(parseTrigger(childElement));         
@@ -306,15 +364,34 @@ void XMLParser::parseMap(const char * filename) {
             if (name == "room")
                 map->addRoom(parseRoom(childElement));
             else if (name == "item")
-              map->addItem(parseItem(childElement));
+            {
+                Item * tempItem = parseItem(childElement);
+                map->addItem(tempItem);
+                for (Item* i : items)
+                    if (i->getName() == tempItem->getName())
+                        *i = *tempItem;
+            }
             else if (name == "creature")
-                map->addCreature(parseCreature(childElement));
+            {
+                Creature * tempCreature = parseCreature(childElement);
+                map->addCreature(tempCreature);
+                for (Creature* c : creatures)
+                    if (c->getName() == tempCreature->getName())
+                        *c = *tempCreature;
+            }
             else if (name == "container")
-                map->addContainer(parseContainer(childElement));
+            {
+                Container * tempContainer = parseContainer(childElement);
+                map->addContainer(tempContainer);
+                for (Container* c : containers)
+                    if (c->getName() == tempContainer->getName())
+                        *c = *tempContainer;
+            }
         }
     }
-    
   }
-  map->display();
-  map->printRooms();
+    std::cout << std::endl; 
+    // map->printVectors();
+    map->printEVERYTHING();
+
 }

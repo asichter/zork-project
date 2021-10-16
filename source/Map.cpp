@@ -20,3 +20,23 @@ void Map::printRooms() {
         rooms[i]->printRoom();
     }
 }
+
+void Map::printVectors() {
+    std::cout << "\nItems: " << items.size() << std::endl;
+    for (Item* i : items)
+        i->printAttrs();
+    std::cout << "\nCreatures: " << creatures.size() << std::endl;
+    for (Creature* c : creatures)
+        c->printAttrs();
+    std::cout << "\nContainers: " << containers.size() << std::endl;
+    for (Container* cn : containers)
+        cn->display();
+}
+
+void Map::printEVERYTHING()
+{
+    for (Room* r : rooms)
+    {
+        r->printAttrs();
+    }
+}

@@ -14,6 +14,24 @@ void Room::display()
     if(getName() != "") std::cout << "Room: " << this->getName() << std::endl;
 }
 
+void Room::printAttrs()
+{
+    std::cout << getName() << std::endl;
+    std::cout << "  -Status: " << getStatus() << std::endl;
+    std::cout << "  -Type  : " << getType() << std::endl;
+    std::cout << "  -Descr : " << getDescription() << std::endl;
+    for (Border* b : borders)
+        b->display();
+    for (Item * i : items)
+        i->printAttrs();
+    for (Container * c : containers)
+        c->printAttrs();
+    for (Creature * c : creatures)
+        c->printAttrs();
+    for (Trigger * t : triggers)
+        t->display();
+}
+
 void Room::addBorder(Border* _border) { borders.push_back(_border); }
 void Room::addItem(Item* _item) { items.push_back(_item); }
 void Room::addContainer(Container* _container) { containers.push_back(_container); }

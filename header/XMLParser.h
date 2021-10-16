@@ -1,6 +1,7 @@
 #ifndef XMLParser_H_
 #define XMLParser_H_
 #include <string>
+#include <vector>
 #include "Thing.h"
 #include "Map.h"
 #include "Room.h"
@@ -9,6 +10,9 @@
 
 class XMLParser {
 private:
+    std::vector<Item*> items;
+    std::vector<Creature*> creatures;
+    std::vector<Container*> containers;
 
 public:
     Attack * parseAttack(TiXmlElement *);
@@ -21,6 +25,11 @@ public:
     Trigger * parseTrigger(TiXmlElement *);  
     Turnon * parseTurnon(TiXmlElement *);
     void parseMap(const char *);
+
+    virtual void addItem(Item * item);
+    virtual void addCreature(Creature * creature);
+    virtual void addContainer(Container * container);
+    virtual void printVectors();
 };
 
 #endif

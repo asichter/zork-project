@@ -19,6 +19,7 @@ public:
     Creature();
     ~Creature();
     virtual void display();
+    virtual void printAttrs();
     
     virtual void addVulnerability(std::string _vulnerability);
     virtual void addAttack(Attack* _attack);

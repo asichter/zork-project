@@ -19,6 +19,7 @@ public:
     Container();
     ~Container(); 
     virtual void display();
+    virtual void printAttrs();
     virtual void addAccepts(std::string _accept);
     virtual void addItem(Item* _item);
     virtual void addTrigger(Trigger* _trigger);

@@ -19,6 +19,7 @@ public:
     ~Item();
     
     virtual void display();
+    virtual void printAttrs();
 
     virtual void setWriting(std::string _writing);
     virtual void setTurnon(Turnon* _turnon);

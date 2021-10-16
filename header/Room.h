@@ -24,6 +24,7 @@ private:
 public:
     Room();
     virtual void display();
+    virtual void printAttrs();
     
     virtual void addBorder(Border* _border);
     virtual void addItem(Item* _item);

@@ -11,7 +11,7 @@ private:
     std::string name;
     std::string description;
     // Border* border;
-    std::vector<Room *> rooms;
+    std::vector<Room*> rooms;
     std::vector<Item*> items;
     std::vector<Creature*> creatures;
     std::vector<Container*> containers;
@@ -19,6 +19,7 @@ private:
 public:
     Map();
     void display();
+    
     virtual void addRoom(Room * _room);
     virtual void addItem(Item * _item);
     virtual void addCreature(Creature * _creature);
@@ -30,6 +31,8 @@ public:
     virtual std::vector<Container*> getContainers();
 
     virtual void printRooms();
+    virtual void printVectors();
+    virtual void printEVERYTHING();
 };
 
 #endif
