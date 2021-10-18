@@ -20,7 +20,7 @@ CLEAN_FILES=*.gcno *.c.gcov *.gcda *.gcda $(EXECUTABLE)
 ARGS=samples/triggersample.xml
 
 $(EXECUTABLE): $(SRC_C) $(SRC_H)
-	$(CC) -o $(EXECUTABLE) $(SRC_C) $(CFLAGS) ; ./$(EXECUTABLE) $(ARGS)
+	$(CC) -o $(EXECUTABLE) $(SRC_C) $(CFLAGS)
 
 $(RUN): $(EXECUTABLE)
 	./$(EXECUTABLE)
@@ -62,7 +62,21 @@ make:
 	vim Makefile
 
 zip:
-	zip $(EXECUTABLE).zip $(SRC_C) $(SRC_H) $(TEST_C) Makefile
+	zip $(EXECUTABLE).zip header/* source/* tinyxml/* samples/* Makefile
 
-.PHONY: submit test pretest coverage debug clean run tester code make zip
+demo: $(EXECUTABLE)
+	printf "\n\n\x1b[32mOutput from samples/containersample.xml\x1b[0m\n" ;\
+	./$(EXECUTABLE) samples/containersample.xml ;\
+	printf "\n\n\x1b[32mOutput from samples/creaturesample.xml\x1b[0m\n" ;\
+	./$(EXECUTABLE) samples/creaturesample.xml ;\
+	printf "\n\n\x1b[32mOutput from samples/itemsample.xml\x1b[0m\n" ;\
+	./$(EXECUTABLE) samples/itemsample.xml ;\
+	printf "\n\n\x1b[32mOutput from samples/roomsample.xml\x1b[0m\n" ;\
+	./$(EXECUTABLE) samples/roomsample.xml ;\
+	printf "\n\n\x1b[32mOutput from samples/triggersample.xml\x1b[0m\n" ;\
+	./$(EXECUTABLE) samples/triggersample.xml ;\
+	printf "\n\n\x1b[32mOutput from samples/sample.xml\x1b[0m\n" ;\
+	./$(EXECUTABLE) sample.xml
+
+.PHONY: submit test pretest coverage debug clean run tester code make zip demo
 
