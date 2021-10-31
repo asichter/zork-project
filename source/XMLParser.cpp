@@ -392,6 +392,6 @@ void XMLParser::parseMap(const char * filename) {
   }
     std::cout << std::endl; 
     // map->printVectors();
-    map->printEVERYTHING();
+    // map->printEVERYTHING();
 
 }
