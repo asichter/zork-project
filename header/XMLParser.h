@@ -2,9 +2,9 @@
 #define XMLParser_H_
 #include <string>
 #include <vector>
-#include "Thing.h"
-#include "Map.h"
-#include "Room.h"
+#include "map/Thing.h"
+#include "map/Map.h"
+#include "map/Room.h"
 #include "../tinyxml/tinyxml.h"
 #include "../tinyxml/tinystr.h"
 

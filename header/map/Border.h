@@ -2,7 +2,7 @@
 #define Border_H_
 
 #include <string>
-#include "../header/Thing.h"
+#include "Thing.h"
 
 class Border : public Thing {
 private:

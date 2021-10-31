@@ -1,7 +1,7 @@
 EXECUTABLE=zork-project
-SRC_C=tinyxml/*.cpp source/*.cpp
+SRC_C=tinyxml/*.cpp source/*.cpp source/map/*.cpp
 TEST_C=source/main.cpp
-SRC_H=tinyxml/*.h header/*.h
+SRC_H=tinyxml/*.h header/*.h header/map/*.h
 TARGET=source/main.cpp
 CC=g++
 CFLAGS=-g -std=c++11 -Wall -Wvla -pedantic -DTIXML_USE_STL #-Wshadow

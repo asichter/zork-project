@@ -1,4 +1,4 @@
-#include "../header/StatusCondition.h"
+#include "../../header/map/StatusCondition.h"
 #include <iostream>
 #include <string>
 

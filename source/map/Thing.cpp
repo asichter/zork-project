@@ -1,4 +1,4 @@
-#include "../header/Thing.h"
+#include "../../header/map/Thing.h"
 #include <iostream>
 #include <string>
 

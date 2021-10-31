@@ -1,4 +1,4 @@
-#include "../header/Trigger.h"
+#include "../../header/map/Trigger.h"
 #include <iostream>
 #include <string>
 
