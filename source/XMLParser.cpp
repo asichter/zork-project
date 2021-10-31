@@ -9,15 +9,18 @@ void XMLParser::addItem(Item* item)
     items.push_back(item);
 }
 
+
 void XMLParser::addCreature(Creature * creature)
 {
     creatures.push_back(creature);
 }
 
+
 void XMLParser::addContainer(Container * container)
 {
     containers.push_back(container);
 }
+
 
 void XMLParser::printVectors()
 {   
@@ -31,6 +34,7 @@ void XMLParser::printVectors()
     for (Container* cn : containers)
         cn->display();
 }
+
 
 Attack * XMLParser::parseAttack(TiXmlElement * element) 
 {
@@ -55,6 +59,7 @@ Attack * XMLParser::parseAttack(TiXmlElement * element)
     return attack;
 }
 
+
 Border * XMLParser::parseBorder(TiXmlElement * element) 
 {
     Border * border = new Border();
@@ -77,6 +82,7 @@ Border * XMLParser::parseBorder(TiXmlElement * element)
     border->display();
     return border;   
 }
+
 
 Condition * XMLParser::parseCondition(TiXmlElement * element) 
 {
@@ -116,6 +122,7 @@ Condition * XMLParser::parseCondition(TiXmlElement * element)
     condition->display();
     return condition;
 }
+
 
 Container * XMLParser::parseContainer(TiXmlElement * element) {
     Container * container = new Container();
@@ -158,6 +165,7 @@ Container * XMLParser::parseContainer(TiXmlElement * element) {
     return container;
 }
 
+
 Creature * XMLParser::parseCreature(TiXmlElement * element) 
 {
     Creature * creature = new Creature();
@@ -188,6 +196,7 @@ Creature * XMLParser::parseCreature(TiXmlElement * element)
         addCreature(creature);
     return creature;
 }
+
 
 Item * XMLParser::parseItem(TiXmlElement * element) {
     Item * item = new Item();
@@ -222,6 +231,7 @@ Item * XMLParser::parseItem(TiXmlElement * element) {
         addItem(item);
     return item;
 }
+
 
 Room * XMLParser::parseRoom(TiXmlElement * element) 
 { 
@@ -278,6 +288,7 @@ Room * XMLParser::parseRoom(TiXmlElement * element)
     return room;
 }
 
+
 Trigger * XMLParser::parseTrigger(TiXmlElement * element) 
 {
     Trigger * trigger = new Trigger();
@@ -307,6 +318,7 @@ Trigger * XMLParser::parseTrigger(TiXmlElement * element)
     return trigger;
 }
 
+
 Turnon * XMLParser::parseTurnon(TiXmlElement * element)
 {
     Turnon * turnon = new Turnon();
@@ -330,21 +342,8 @@ Turnon * XMLParser::parseTurnon(TiXmlElement * element)
     return turnon;
 }
 
-    //  *  = new ();
-    // for (TiXmlNode* node = element->FirstChild(); node != NULL; node = node->NextSibling()) 
-    // {
-    //     TiXmlElement * childElement = node->ToElement();
-    //     if (childElement != NULL)
-    //     { 
-    //         std::string name = childElement->ValueStr();
-    //         std::string value = "";
-    //         if (childElement->GetText() != NULL)
-    //             value = childElement->GetText();
-    //     }
-    // }
-    // return ;
 
-void XMLParser::parseMap(const char * filename) {
+Map * XMLParser::parseMap(const char * filename) {
   TiXmlDocument doc(filename);
   doc.LoadFile();
 
@@ -391,7 +390,6 @@ void XMLParser::parseMap(const char * filename) {
     }
   }
     std::cout << std::endl; 
-    // map->printVectors();
-    // map->printEVERYTHING();
-
+    map->printEVERYTHING();
+    return map;
 }

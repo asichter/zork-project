@@ -14,7 +14,7 @@ public:
     virtual void move(std::string dir);
     virtual void i();
     virtual void take(Item * item);
-    virtual void open_exit();
+    virtual bool open_exit();
     virtual void drop(Item * item);
 
     std::vector<Item*> getInventory();

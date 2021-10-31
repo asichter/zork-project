@@ -24,4 +24,20 @@ void Player::take(Item * item) {
     inventory.push_back(item);
 }
 
-void Player::op
+bool Player::open_exit() {
+    if (currentRoom.getType == "exit"){
+        std::cout << "Game Over..." << std::endl;
+        return true;
+    }
+    return false;
+}
+
+void Player::drop(Item * item) {
+    for (Item * i : inventory) {
+        if (i.getName() == item.getName()) {
+            add(i, currentRoom);
+            
+            
+        }
+    }
+}

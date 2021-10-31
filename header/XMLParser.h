@@ -24,7 +24,7 @@ public:
     Room * parseRoom(TiXmlElement *);
     Trigger * parseTrigger(TiXmlElement *);  
     Turnon * parseTurnon(TiXmlElement *);
-    void parseMap(const char *);
+    Map * parseMap(const char *);
 
     virtual void addItem(Item * item);
     virtual void addCreature(Creature * creature);
