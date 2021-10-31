@@ -123,6 +123,6 @@ int main(int argc, char * argv[]) {
 		std::cout << "No XML file specified. Please specify an XML file as an argument to this program." << std::endl;
 		return 0;
 	}
-    xml.parseMap(argv[1]); 
+    Map* map = xml.parseMap(argv[1]); 
     return 0;
 }
