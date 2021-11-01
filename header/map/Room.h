@@ -32,6 +32,8 @@ public:
     virtual void addCreature(Creature* _creature);
     virtual void addTrigger(Trigger* _trigger);
 
+    virtual void removeItem(Item* item);
+
     virtual std::vector<Border*> getBorder();
     virtual std::vector<Item*> getItem();
     virtual std::vector<Container*> getContainer();

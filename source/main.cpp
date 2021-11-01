@@ -1,5 +1,6 @@
 #include "../tinyxml/tinyxml.h"
 #include "../header/XMLParser.h"
+#include "../header/Player.h"
 #include <string>
 
 const unsigned int NUM_INDENTS_PER_SPACE=2;
@@ -117,12 +118,61 @@ void dump_to_stdout(const char* pFilename)
 	}
 }
 
+void help() {
+	std::cout << "TODO: Implement help function." << std::endl;
+}
+
 int main(int argc, char * argv[]) {
     XMLParser xml;
 	if(argc != 2) {
 		std::cout << "No XML file specified. Please specify an XML file as an argument to this program." << std::endl;
 		return 0;
 	}
+
     Map* map = xml.parseMap(argv[1]); 
+	Player* player = new Player(map);
+	std::string command = "";
+
+	std::cout << "\n\n-------------Welcome to Zork!----------------" << std::endl;
+	std::cout << "If you need help, type \"help\" or \"h\" at any point to get available commands.\n" << std::endl;
+	std::cout << player->getCurrentRoom()->getDescription() << std::endl;
+
+	do {
+		std::cout << "\nWhat would you like to do?" << std::endl;
+		getline(std::cin, command);
+
+		if(command == "n" || command == "s" || command == "e" || command == "w") {
+			player->move(command, map);
+		}
+		else if(command == "north" || command == "south" || command == "east" || command == "west") {
+			player->move(command, map);
+		}
+		else if(command == "i" || command == "inventory") {
+			player->printInventory();
+		}
+		else if(command.substr(0, 4) == "take") {
+			std::vector<Item*> items = player->getCurrentRoom()->getItem();
+			for(Item* i : items) {
+				if(i->getName() == command.substr(5, command.size())) {
+					player->take(i);
+				}
+			}
+
+		}
+		else if(command.substr(0, 4) == "drop") {
+			std::vector<Item*> items = player->getInventory();
+			for(Item* i : items) {
+				if(i->getName() == command.substr(5, command.size())) {
+					player->drop(i);
+				}
+			}
+		}
+		else if(command == "h" || command == "help") {
+			help();
+		}
+	} while(command != "open exit" || !player->atExit());
+
+	std::cout << "\nVictory!" << std::endl;
+
     return 0;
 }

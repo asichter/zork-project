@@ -25,6 +25,8 @@ public:
     virtual void addTrigger(Trigger* _trigger);
     virtual void setName(std::string _name);
 
+    virtual void removeItem(Item* item);
+
     virtual std::vector<std::string> getAccepts();
     virtual std::vector<Trigger*> getTrigger();
     virtual std::vector<Item*> getItem();

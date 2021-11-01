@@ -38,6 +38,20 @@ void Room::addContainer(Container* _container) { containers.push_back(_container
 void Room::addCreature(Creature* _creature) { creatures.push_back(_creature); }
 void Room::addTrigger(Trigger* _trigger) { triggers.push_back(_trigger); }
 
+void Room::removeItem(Item* item) {
+    int index = 0;
+    for(Item* i : items) {
+        if(i->getName() == item->getName()) {
+            items.erase(items.begin() + index);
+        }
+        index++;
+    }
+
+    for(Container* c : containers) {
+        c->removeItem(item);
+    }
+}
+
 std::vector<Border*> Room::getBorder() { return borders; }
 std::vector<Item*> Room::getItem() { return items; }
 std::vector<Container*> Room::getContainer() { return containers; }

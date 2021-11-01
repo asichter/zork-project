@@ -11,12 +11,17 @@ private:
     friend class Map;
 
 public:
-    virtual void move(std::string dir);
-    virtual void i();
+    Player(Map* map);
+    virtual void move(std::string dir, Map* map);
+    virtual void printInventory();
     virtual void take(Item * item);
-    virtual bool open_exit();
+    virtual bool atExit();
     virtual void drop(Item * item);
 
     std::vector<Item*> getInventory();
-    Room * getRoom();
-}
+    void printCurrentRoom();
+    Room* getCurrentRoom();
+    std::string getCurrentRoomName();
+};
+
+#endif

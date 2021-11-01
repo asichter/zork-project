@@ -29,6 +29,16 @@ void Container::addItem(Item* _item) { items.push_back(_item); }
 void Container::addTrigger(Trigger* _trigger) { triggers.push_back(_trigger); }
 void Container::setName(std::string _name) { name = _name; }
 
+void Container::removeItem(Item* item) {
+    int index = 0;
+    for(Item* i : items) {
+        if(i->getName() == item->getName()) {
+            items.erase(items.begin() + index);
+        }
+        index++;
+    }
+}
+
 std::vector<std::string> Container::getAccepts() { return accepts; }
 std::vector<Item*> Container::getItem() { return items; }
 std::vector<Trigger*> Container::getTrigger() { return triggers; }
