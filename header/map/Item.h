@@ -4,6 +4,8 @@
 #include "Trigger.h"
 #include "Turnon.h"
 #include "Thing.h"
+#include <algorithm>
+
 
 class Item : public Thing {
 private:
@@ -28,6 +30,8 @@ public:
     virtual std::string getWriting();
     virtual Turnon* getTurnon();
     virtual std::vector<Trigger*> getTrigger();
+
+    virtual void turn_on();
 };
 
 #endif

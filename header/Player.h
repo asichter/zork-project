@@ -17,11 +17,19 @@ public:
     virtual void take(Item * item);
     virtual bool atExit();
     virtual void drop(Item * item);
+    virtual void open(Container * container);
+    virtual void read(Item * item, std::string name);
+    virtual void put(Item * item, Container * container);
+    virtual void turn_on(Item * item);
+    virtual void attack(Creature * creature, Item * item);
+
+    virtual void remove(Item * item);
 
     std::vector<Item*> getInventory();
     void printCurrentRoom();
     Room* getCurrentRoom();
     std::string getCurrentRoomName();
+    bool inInventory(Item * item);
 };
 
 #endif

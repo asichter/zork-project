@@ -31,6 +31,7 @@ public:
     virtual std::vector<Container*> getContainers();
 
     virtual void printRooms();
+    virtual void printItems();
     virtual void printVectors();
     virtual void printEVERYTHING();
 };

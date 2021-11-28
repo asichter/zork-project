@@ -2,8 +2,34 @@
 #include "../header/XMLParser.h"
 #include "../header/Player.h"
 #include <string>
+#include <algorithm>
+#include <cctype>
+#include <vector>
 
 const unsigned int NUM_INDENTS_PER_SPACE=2;
+const std::vector <std::string> VALID_CMDS = 
+    {"n", "s", "e", "w",
+    "north", "south", "east", "west",
+    "i", "inventory",
+    "take", "drop", "open", "read", "put", "turn", "attack",
+    "current", "inventorystatus", "items"};
+
+template <typename T>
+T* contains(std::vector<T> vec, const T & elem){
+    for (auto * a : vec) {
+        if (a == elem)
+            return a;
+    }
+    return NULL;
+}
+template <typename T>
+T contains(std::vector<T> vec, const std::string name) {
+    for (auto * e : vec) {
+        if (e->getName() == name)
+            return e;
+    }
+    return NULL;
+}
 
 const char * getIndent( unsigned int numIndents )
 {
@@ -119,7 +145,62 @@ void dump_to_stdout(const char* pFilename)
 }
 
 void help() {
-	std::cout << "TODO: Implement help function." << std::endl;
+	// std::cout << "TODO: Implement help function." << std::endl;
+    const char * help_text = "\n \
+    Movement Commands: n, s, e, w\n \
+    \t Type a movement command to move in the corresponding direction.\n\n \
+    Inventory Commands: i\n \
+    \t Press 'i' to view your inventory\n\n \
+    Interaction Commands:\n \
+    \t take <item>: takes the item and puts it in your inventory\n \
+    \t drop <item>: drops the item and places it in the current room\n \
+    \t read <item>: displays any writing on the item\n \
+    \t turnon <item>: activates the item\n \
+    \t open <container>: opens the container and displays the contents\n \
+    \t put <item> in <container>: removes the item from your inventory and places it in the container\n \
+    \t attack <creature> with <item>: attacks the creature with the item and displays the success or failure\n";
+    std::cout << help_text << std::endl;
+}
+
+bool valid_cmd(std::string cmd) {
+    for (std::string c : VALID_CMDS) {
+        if (cmd == c)
+            return 1;
+    }
+    return 0;
+}
+
+std::string get_cmd_item(std::vector<std::string> cmd_str) {
+    cmd_str.erase(cmd_str.begin());
+    std::string item_name = "";
+    for (auto s : cmd_str) {
+        item_name += s + " ";
+    }
+    item_name.pop_back();
+    return item_name;
+}
+
+std::vector<std::string> parse_put(std::vector<std::string> cmd_str) {
+    std::vector<std::string> put_str;
+    cmd_str.erase(cmd_str.begin());
+    std::string item_name = "";
+    while(cmd_str.front() != "in" && !cmd_str.empty()) {
+        item_name += cmd_str.front() + " ";
+        cmd_str.erase(cmd_str.begin());
+    }
+    if (cmd_str.empty())
+        return put_str;
+
+    item_name.pop_back();
+    cmd_str.erase(cmd_str.begin());
+
+    std::string cont_name = "";
+    for (auto s : cmd_str) {
+        cont_name += s + " ";
+    }
+    cont_name.pop_back();
+    put_str = {item_name, cont_name};
+    return put_str;
 }
 
 int main(int argc, char * argv[]) {
@@ -131,17 +212,30 @@ int main(int argc, char * argv[]) {
 
     Map* map = xml.parseMap(argv[1]); 
 	Player* player = new Player(map);
+	std::string input = "";
 	std::string command = "";
+    std::vector <std::string> cmd_str;
 
 	std::cout << "\n\n-------------Welcome to Zork!----------------" << std::endl;
 	std::cout << "If you need help, type \"help\" or \"h\" at any point to get available commands.\n" << std::endl;
 	std::cout << player->getCurrentRoom()->getDescription() << std::endl;
+    help();
 
 	do {
+        cmd_str.clear();
 		std::cout << "\nWhat would you like to do?" << std::endl;
-		getline(std::cin, command);
+		getline(std::cin, input);
+        transform(input.begin(), input.end(), input.begin(), ::tolower);
+        std::istringstream ss(input);
+        std::string word;
+        
+        while (ss >> word) { cmd_str.push_back(word); }
+        command = cmd_str.front();
 
-		if(command == "n" || command == "s" || command == "e" || command == "w") {
+        if (!valid_cmd(command)) {
+            std::cout << "\n\tPlease type a valid command!\n\tPress 'h' to view them" << std::endl;
+        }
+		else if(command == "n" || command == "s" || command == "e" || command == "w") {
 			player->move(command, map);
 		}
 		else if(command == "north" || command == "south" || command == "east" || command == "west") {
@@ -150,27 +244,83 @@ int main(int argc, char * argv[]) {
 		else if(command == "i" || command == "inventory") {
 			player->printInventory();
 		}
-		else if(command.substr(0, 4) == "take") {
-			std::vector<Item*> items = player->getCurrentRoom()->getItem();
-			for(Item* i : items) {
-				if(i->getName() == command.substr(5, command.size())) {
-					player->take(i);
-				}
-			}
+        else if (command == "current") {
+            player->getCurrentRoom()->printAttrs();
+        }
+        else if (command == "inventorystatus") {
+            std::vector<Item *> items = player->getInventory();
+            for (Item * i : items) {
+                i->printAttrs();
+            }
+        }
+        else if (command == "items"){
+            map->printItems();
+        }
+        else if (cmd_str.size() == 1) {
+            std::cout << "\n\t Please specify what item you would like to " + command + "!" << std::endl;
+        }
+		else if(command == "take") {
+            std::string item_name = get_cmd_item(cmd_str);
+            Item * i = contains(player->getCurrentRoom()->getItem(), item_name);
+            if (i == NULL) {
+                std::vector<Container*> cs = player->getCurrentRoom()->getContainer();
+                for (auto c : cs) {
+                    if (c->isOpen())
+                        i = contains(c->getItem(), item_name);
+                }
+            }
+            if (i != NULL) player->take(i);
+		}
+		else if(command == "drop") {
+            std::string item_name = get_cmd_item(cmd_str);
+            Item * i = contains(player->getInventory(), item_name);
+            if (i != NULL) player->drop(i);
+		}
+        else if(command == "open") {
+            std::string item_name = get_cmd_item(cmd_str);
+            Container * c = contains(player->getCurrentRoom()->getContainer(), item_name);
+            if (c != NULL) player->open(c);
+        }
+        else if (command == "read") {
+            std::string item_name = get_cmd_item(cmd_str);
+            Item * item = contains(player->getInventory(), item_name);
+            player->read(item, item_name);
+        }
+        else if (command == "put") {
+            std::vector<std::string> put_str = parse_put(cmd_str);
+            if (!put_str.empty()) {
+                Item * item = contains(player->getInventory(), put_str.at(0));
+                Container * container = contains(player->getCurrentRoom()->getContainer(), put_str.at(1));
+                if (item == NULL) {
+                    std::cout << "\t" + put_str.at(0) + " not in inventory" << std::endl;
+                } else if (container == NULL) {
+                    std::cout << "\tYou cannot access that container!" << std::endl;
+                } else if (!container->isOpen()) {
+                    std::cout << "\tCannot add " + put_str.at(0) + " to closed " + put_str.at(1) + "." << std::endl;
+                } else { 
+                    player->put(item, container);
+                }
+            }
+        }
+        else if (command == "turn") {
+            if (cmd_str.at(1) == "on") {
+                cmd_str.erase(cmd_str.begin());
+                std::string item_name = get_cmd_item(cmd_str);
+                Item * item = contains(player->getInventory(), item_name);
+                if (item == NULL)
+                    std::cout << "\t" + item_name + " not in inventory." << std::endl;
+                else
+                    item->turn_on();
+            }
+        }
+        else if (command == "attack"){
 
-		}
-		else if(command.substr(0, 4) == "drop") {
-			std::vector<Item*> items = player->getInventory();
-			for(Item* i : items) {
-				if(i->getName() == command.substr(5, command.size())) {
-					player->drop(i);
-				}
-			}
-		}
+        }
 		else if(command == "h" || command == "help") {
 			help();
 		}
-	} while(command != "open exit" || !player->atExit());
+        
+	} while(input != "open exit" || !player->atExit());
 
 	std::cout << "\nVictory!" << std::endl;
 

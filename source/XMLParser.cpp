@@ -55,7 +55,7 @@ Attack * XMLParser::parseAttack(TiXmlElement * element)
                 attack->setPrint(value); 
         }
     }
-    attack->display();
+    // attack->display();
     return attack;
 }
 
@@ -79,7 +79,7 @@ Border * XMLParser::parseBorder(TiXmlElement * element)
                 border->setDirection(value);
         }
     }
-    border->display();
+    // border->display();
     return border;   
 }
 
@@ -119,7 +119,7 @@ Condition * XMLParser::parseCondition(TiXmlElement * element)
     else
         condition = new StatusCondition(object, status);
 
-    condition->display();
+    // condition->display();
     return condition;
 }
 
@@ -151,7 +151,8 @@ Container * XMLParser::parseContainer(TiXmlElement * element) {
                 Item* item = new Item();
                 item->setName(value);
                 container->addItem(item);
-                item->display();
+                // item->printAttrs();
+                // item->display();
                 // container->addItem(parseItem(childElement));
             }
                 
@@ -189,7 +190,7 @@ Creature * XMLParser::parseCreature(TiXmlElement * element)
                 creature->addTrigger(parseTrigger(childElement));
         }
     }
-    creature->display();
+    // creature->display();
     bool inArray = 0;
     for (Creature* c : creatures) { if (c->getName() == creature->getName()) inArray = 1; }
     if (!inArray)
@@ -224,7 +225,8 @@ Item * XMLParser::parseItem(TiXmlElement * element) {
                 item->addTrigger(parseTrigger(childElement));
         }
     }
-    item->display();
+    item->printAttrs();
+    // item->display();
     bool inArray = 0;
     for (Item* c : items) { if (c->getName() == item->getName()) inArray = 1; }
     if (!inArray)
@@ -269,7 +271,7 @@ Room * XMLParser::parseRoom(TiXmlElement * element)
                 Creature* creature = new Creature();
                 creature->setName(value);
                 room->addCreature(creature);
-                creature->display();
+                // creature->display();
                 addCreature(creature);
             }
             else if (name == "item") {
@@ -277,14 +279,15 @@ Room * XMLParser::parseRoom(TiXmlElement * element)
                 Item* item = new Item();
                 item->setName(value);
                 room->addItem(item);
-                item->display();
+                // item->printAttrs();
+                // item->display();
                 addItem(item);
             }
             else if (name == "trigger")
                 room->addTrigger(parseTrigger(childElement));         
         }
     }
-    room->display();
+    // room->display();
     return room;
 }
 
@@ -314,7 +317,7 @@ Trigger * XMLParser::parseTrigger(TiXmlElement * element)
                 trigger->addCondition(parseCondition(element));
         }
     }
-    trigger->display();
+    // trigger->display();
     return trigger;
 }
 
@@ -338,7 +341,7 @@ Turnon * XMLParser::parseTurnon(TiXmlElement * element)
                 turnon->addAction(value);
         }
     }
-    turnon->display();
+    // turnon->display();
     return turnon;
 }
 
@@ -390,6 +393,6 @@ Map * XMLParser::parseMap(const char * filename) {
     }
   }
     std::cout << std::endl; 
-    map->printEVERYTHING();
+    // map->printEVERYTHING();
     return map;
 }

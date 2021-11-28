@@ -39,6 +39,25 @@ void Container::removeItem(Item* item) {
     }
 }
 
+bool Container::isOpen() { return openStatus; }
+void Container::open() { 
+    openStatus = 1; 
+    std::string printString = "";
+    printString += getName();
+    if (getItem().empty())
+        printString += " is empty.";
+    else {
+        printString += " contains ";
+        for (auto i : getItem())
+            printString += i->getName() + ", ";
+        printString.pop_back();
+        printString.pop_back();
+        printString += ".";
+    }
+    std::cout << printString << std::endl;
+}
+void Container::close() { openStatus = 0; }
+
 std::vector<std::string> Container::getAccepts() { return accepts; }
 std::vector<Item*> Container::getItem() { return items; }
 std::vector<Trigger*> Container::getTrigger() { return triggers; }

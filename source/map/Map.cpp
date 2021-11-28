@@ -40,3 +40,9 @@ void Map::printEVERYTHING()
         r->printAttrs();
     }
 }
+
+void Map::printItems() {
+    for (Item * i : items) {
+        i->printAttrs();
+    }
+}

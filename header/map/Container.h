@@ -14,6 +14,7 @@ private:
     std::vector<std::string> accepts;
     std::vector<Trigger*> triggers;
     std::vector<Item*> items;
+    bool openStatus = 0;
 
 public:
     Container();
@@ -26,6 +27,9 @@ public:
     virtual void setName(std::string _name);
 
     virtual void removeItem(Item* item);
+    virtual bool isOpen();
+    virtual void open();
+    virtual void close();
 
     virtual std::vector<std::string> getAccepts();
     virtual std::vector<Trigger*> getTrigger();

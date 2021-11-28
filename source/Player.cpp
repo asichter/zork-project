@@ -3,6 +3,23 @@
 #include <iostream>
 #include <vector>
 
+template <typename T>
+T contains(std::vector<T> vec, const T & elem){
+    for (auto * a : vec) {
+        if (a == elem)
+            return a;
+    }
+    return NULL;
+}
+template <typename T>
+T contains(std::vector<T> vec, const std::string name) {
+    for (auto * e : vec) {
+        if (e->getName() == name)
+            return e;
+    }
+    return NULL;
+}
+
 Player::Player(Map* map) {
     std::vector<Room*> rooms = map->getRooms();
     currentRoom = NULL;
@@ -68,6 +85,16 @@ void Player::move(std::string dir, Map* map) {
     }
 }
 
+void Player::remove(Item * item) {
+    int index = 0;
+    for (Item * i : inventory) {
+        if (i->getName() == item->getName()) {
+            inventory.erase(inventory.begin() + index);
+        }
+        index++;
+    }
+}
+
 void Player::printInventory() {
     std::cout << "Inventory:" << std::endl;
     if(inventory.size() != 0) {
@@ -81,8 +108,16 @@ void Player::printInventory() {
 
 void Player::take(Item * item) {
     inventory.push_back(item);
-    currentRoom->removeItem(item);
-    std::cout << "Added the " << item->getName() << " to the inventory." << std::endl;
+    if (contains(currentRoom->getItem(), item))
+        currentRoom->removeItem(item);
+    else  {
+        std::vector<Container*> cs = currentRoom->getContainer();
+        for (auto c : cs) {
+            if(contains(c->getItem(), item))
+                c->removeItem(item);
+        }
+    }
+    std::cout << "\tAdded the " << item->getName() << " to the inventory." << std::endl;
 }
 
 bool Player::atExit() {
@@ -93,16 +128,36 @@ bool Player::atExit() {
 }
 
 void Player::drop(Item * item) {
-    int index = 0;
-    for (Item * i : inventory) {
-        if (i->getName() == item->getName()) {
-            currentRoom->addItem(i);
-            inventory.erase(inventory.begin() + index);
-            std::cout << "Dropped the " << i->getName() << "." << std::endl;
-        }
-        index++;
+    remove(item);
+    currentRoom->addItem(item);
+    std::cout << "\tDropped the " << item->getName() << "." << std::endl;
+}
+
+void Player::open(Container * container) { 
+    container->open();
+}
+
+void Player::read(Item * item, std::string name) { 
+    if (item == NULL)
+        std::cout << "\t" + name + " not in inventory." << std::endl;
+    else {
+        std::string writing = item->getWriting();
+        if(writing != "")
+            std::cout << "\t" + item->getWriting() << std::endl;
+        else
+            std::cout << "\tNothing written" << std::endl;
     }
 }
+
+void Player::put(Item * item, Container * container) { 
+    remove(item);
+    container->addItem(item);
+
+}
+
+void Player::turn_on(Item * item) { }
+
+void Player::attack(Creature * creature, Item * item) { }
 
 std::vector<Item*> Player::getInventory() {
     return inventory;
@@ -118,4 +173,12 @@ Room* Player::getCurrentRoom() {
 
 std::string Player::getCurrentRoomName() {
     return currentRoom->getName();
+}
+
+bool Player::inInventory(Item * item) {
+    for (Item * i : inventory) {
+        if (item == i)
+            return 1;
+    }
+    return 0;
 }
