@@ -40,6 +40,8 @@ public:
     virtual std::vector<Creature*> getCreature();
     virtual std::vector<Trigger*> getTrigger();
 
+    virtual Trigger * hasTrigger(std::string cmd);
+
     virtual void printItems();
     virtual void printCreatures();
     virtual void printContainers();

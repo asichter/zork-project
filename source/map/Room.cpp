@@ -29,7 +29,7 @@ void Room::printAttrs()
     for (Creature * c : creatures)
         c->printAttrs();
     for (Trigger * t : triggers)
-        t->display();
+        t->printAttrs();
 }
 
 void Room::addBorder(Border* _border) { borders.push_back(_border); }
@@ -57,6 +57,15 @@ std::vector<Item*> Room::getItem() { return items; }
 std::vector<Container*> Room::getContainer() { return containers; }
 std::vector<Creature*> Room::getCreature() { return creatures; }
 std::vector<Trigger*> Room::getTrigger() { return triggers; }
+
+Trigger * Room::hasTrigger(std::string cmd) {
+    for (Trigger * t : triggers) {
+        if (t->getCommand() == cmd) {
+            return t;
+        }
+    }
+    return NULL;
+}
 
 void Room::printItems() {
     std::cout << "no. if items: " << items.size() << std::endl;

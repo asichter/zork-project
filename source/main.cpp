@@ -203,6 +203,15 @@ std::vector<std::string> parse_put(std::vector<std::string> cmd_str) {
     return put_str;
 }
 
+bool checkCondition(Condition* c, Player * player){
+    if(c->getType() == "owner") {
+        if(static_cast<OwnerCondition*>(c)->getHas() == (contains(player->getInventory(), static_cast<OwnerCondition*>(c)->getObject()) != NULL)) {
+            return true;
+        }
+    }
+    return false;
+}
+
 int main(int argc, char * argv[]) {
     XMLParser xml;
 	if(argc != 2) {
@@ -218,8 +227,9 @@ int main(int argc, char * argv[]) {
 
 	std::cout << "\n\n-------------Welcome to Zork!----------------" << std::endl;
 	std::cout << "If you need help, type \"help\" or \"h\" at any point to get available commands.\n" << std::endl;
-	std::cout << player->getCurrentRoom()->getDescription() << std::endl;
-    help();
+	help();
+    std::cout << player->getCurrentRoom()->getDescription() << std::endl;
+    
 
 	do {
         cmd_str.clear();
@@ -230,13 +240,50 @@ int main(int argc, char * argv[]) {
         std::string word;
         
         while (ss >> word) { cmd_str.push_back(word); }
+        std::string full_cmd;
+        for (std::string s : cmd_str) {
+            full_cmd += s + " ";
+        }
+        full_cmd.pop_back();
         command = cmd_str.front();
 
         if (!valid_cmd(command)) {
             std::cout << "\n\tPlease type a valid command!\n\tPress 'h' to view them" << std::endl;
+        } 
+        else if ((player->getCurrentRoom()->hasTrigger(full_cmd)) != NULL) {
+            std::vector<Trigger *> triggers = player->getCurrentRoom()->getTrigger();
+            bool condMet = true;
+
+            for (Trigger * trigger : triggers) {
+                if (trigger->getCommand() == full_cmd) {
+                    std::vector<Condition*> trig_conditions = trigger->getCondition();
+                    for (Condition * c : trig_conditions) 
+                        condMet &= checkCondition(c, player);
+                    if (condMet) {
+                        for(std::string s : trigger->getPrints())
+                            std::cout << "\t" + s << std::endl;
+                        // NEED : do actions
+                    }
+                }
+            }
         }
 		else if(command == "n" || command == "s" || command == "e" || command == "w") {
-			player->move(command, map);
+            // Trigger * trigger = player->getCurrentRoom()->hasTrigger(command);
+            // bool condMet = true;
+            // if (trigger != NULL) {
+            //     std::vector<Condition*> trig_conditions = trigger->getCondition();
+            //     for (Condition * c : trig_conditions) {
+            //         condMet &= checkCondition(c, player);
+            //     }
+            //     if (condMet) {
+            //         for(std::string s : trigger->getPrints()) {
+            //             std::cout << "\t" + s << std::endl;
+            //         }
+            //     } else
+            //         player->move(command, map);
+            // } 
+            // else
+                player->move(command, map);
 		}
 		else if(command == "north" || command == "south" || command == "east" || command == "west") {
 			player->move(command, map);

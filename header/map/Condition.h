@@ -12,6 +12,7 @@ public:
     ~Condition();
     virtual std::string getType();
     virtual void display();
+    virtual void printAttrs();
 };
 
 #endif

@@ -25,6 +25,8 @@ public:
     virtual void addPrints(std::string _print);
     virtual void addAction(std::string _action);
 
+    virtual void printAttrs();
+
     virtual std::string getCommand();
     virtual std::vector<Condition*> getCondition();
     virtual std::vector<std::string> getPrints();

@@ -12,7 +12,13 @@ private:
 public:
     OwnerCondition(bool _has, std::string _object, std::string _owner);
     bool conditionMet(bool _has, std::string _object, std::string _owner);
+
+    virtual bool getHas();
+    virtual std::string getObject();
+    virtual std::string getOwner();
+
     void display();
+    virtual void printAttrs();
 };
 
 #endif

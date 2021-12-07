@@ -87,8 +87,6 @@ Border * XMLParser::parseBorder(TiXmlElement * element)
 Condition * XMLParser::parseCondition(TiXmlElement * element) 
 {
     Condition * condition = new Condition();
-    // OwnerCondition * ownercondition = NULL;
-    // StatusCondition * statuscondition = NULL;
     std::string has = "";
     std::string object = "";
     std::string owner = "";
@@ -103,7 +101,6 @@ Condition * XMLParser::parseCondition(TiXmlElement * element)
             std::string value = "";
             if (childElement->GetText() != NULL)
                 value = childElement->GetText();
-
             if (name == "has")
                 has = value;
             else if (name == "object")
@@ -113,9 +110,10 @@ Condition * XMLParser::parseCondition(TiXmlElement * element)
             else if (name == "status")
                 status = value;
         }
+        
     }
     if (has != "")
-        condition = new OwnerCondition((has == "y"), object, owner);
+        condition = new OwnerCondition((has == "yes"), object, owner);
     else
         condition = new StatusCondition(object, status);
 
@@ -151,16 +149,12 @@ Container * XMLParser::parseContainer(TiXmlElement * element) {
                 Item* item = new Item();
                 item->setName(value);
                 container->addItem(item);
-                std::cout << "\nItem in Container:" << std::endl;
-                std::cout << item->getName() + ": " << static_cast<void*>(item) << std::endl;
-                // item->printAttrs();
-                // item->display();
                 // container->addItem(parseItem(childElement));
             }
                 
         }
     }
-    container->display();
+    //container->display();
     bool inArray = 0;
     for (Container* c : containers) { if (c->getName() == container->getName()) inArray = 1; }
     if (!inArray)
@@ -227,8 +221,7 @@ Item * XMLParser::parseItem(TiXmlElement * element) {
                 item->addTrigger(parseTrigger(childElement));
         }
     }
-    item->printAttrs();
-    // item->display();
+    // item->printAttrs();
     bool inArray = 0;
     for (Item* c : items) { if (c->getName() == item->getName()) inArray = 1; }
     if (!inArray)
@@ -265,7 +258,7 @@ Room * XMLParser::parseRoom(TiXmlElement * element)
                 Container* container = new Container();
                 container->setName(value);
                 room->addContainer(container);
-                container->display();
+                // container->display();
                 addContainer(container);
             }
             else if (name == "creature") {
@@ -315,8 +308,10 @@ Trigger * XMLParser::parseTrigger(TiXmlElement * element)
                 trigger->addPrints(value);
             else if (name == "action")
                 trigger->addAction(value);
-            else if (name == "condition")
-                trigger->addCondition(parseCondition(element));
+            else if (name == "condition") {
+                trigger->addCondition(parseCondition(childElement));
+            }
+                
         }
     }
     // trigger->display();
@@ -373,13 +368,7 @@ Map * XMLParser::parseMap(const char * filename) {
                 map->addItem(tempItem);
                 for (Item* i : items)
                     if (i->getName() == tempItem->getName()) {
-                        // std::cout << "\nItem Declaration: i" << std::endl;
-                        // std::cout << i->getName() + ": " << static_cast<void*>(i) << std::endl;
-                        // std::cout << "\nItem Declaration: temp" << std::endl;
-                        // std::cout << tempItem->getName() + ": " << static_cast<void*>(tempItem) << std::endl;
                         *i = *tempItem;
-                        // std::cout << "\nItem Declaration: i after" << std::endl;
-                        // std::cout << i->getName() + ": " << static_cast<void*>(i) << std::endl;
                     }
             }
             else if (name == "creature")
@@ -403,19 +392,13 @@ Map * XMLParser::parseMap(const char * filename) {
   }
   for (Container * c : map->getContainers()) {
       for (Item * cont_item : c->getItem()) {
-          std::cout << "CONTAINER ITEM " + cont_item->getName() << std::endl;
           for(Item * map_item : map->getItems()) {
-              std::cout << "MAP ITEM " + map_item->getName() << std::endl;
               if (cont_item->getName() == map_item->getName()) {
-                  std::cout << "NAME MATCH " << std::endl;
                   *cont_item = *map_item;
-                  std::cout << cont_item->getName() + ": " << static_cast<void*>(cont_item) << std::endl;
-                  std::cout << map_item->getName() + ": " << static_cast<void*>(map_item) << std::endl;
               }
           }
       }
   }
-    std::cout << std::endl; 
     // map->printEVERYTHING();
     return map;
 }

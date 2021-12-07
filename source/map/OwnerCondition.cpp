@@ -17,4 +17,15 @@ bool OwnerCondition::conditionMet(bool _has, std::string _object, std::string _o
     return true;
 }
 
-void OwnerCondition::display() { std::cout << "Condition" << getType() << std::endl;}
+bool OwnerCondition::getHas() { return has; }
+std::string OwnerCondition::getObject() { return object; }
+std::string OwnerCondition::getOwner() { return owner; }
+
+void OwnerCondition::display() { std::cout << "Condition: " << getType() << std::endl;}
+
+void OwnerCondition::printAttrs() {
+    std::cout << "type: " + getType() << std::endl;
+    std::cout << "has: " + getHas() << std::endl;
+    std::cout << "object: " + getObject() << std::endl;
+    std::cout << "owner: " + getOwner() << std::endl;
+}

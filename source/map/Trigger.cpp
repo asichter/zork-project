@@ -10,6 +10,23 @@ void Trigger::setCommand(std::string _command) { command = _command; }
 void Trigger::addCondition(Condition* _condition) { conditions.push_back(_condition); }
 void Trigger::addPrints(std::string _print) { prints.push_back(_print); }
 void Trigger::addAction(std::string _action) { actions.push_back(_action); }
+void Trigger::printAttrs(){
+    std::cout << "\tType: " + getType() << std::endl;
+    std::cout << "\tCommand: " + getCommand() << std::endl;
+    std::cout << "\tCondition: " << std::endl;
+    for (Condition * c : getCondition()) {
+        std::cout << "\t\t";
+        c->display();
+    }
+    std::cout << "\tPrints: " << std::endl;
+    for (std::string p : getPrints()) {
+        std::cout << "\t\t" + p << std::endl;
+    }
+    std::cout << "\tActions: " << std::endl;
+    for (std::string a : getActions()) {
+        std::cout << "\t\t" + a << std::endl;
+    }
+}
 
 std::string Trigger::getCommand() { return command; }
 std::vector<Condition*> Trigger::getCondition() { return conditions; }
