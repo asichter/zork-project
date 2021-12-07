@@ -204,13 +204,46 @@ std::vector<std::string> parse_put(std::vector<std::string> cmd_str) {
 }
 
 bool checkCondition(Condition* c, Player * player){
-    if(c->getType() == "owner") {
-        if(static_cast<OwnerCondition*>(c)->getHas() == (contains(player->getInventory(), static_cast<OwnerCondition*>(c)->getObject()) != NULL)) {
+    std::string type = c->getType();
+    if(type == "owner") {
+        if (static_cast<OwnerCondition*>(c)->getHas() == (contains(player->getInventory(), static_cast<OwnerCondition*>(c)->getObject()) != NULL)) {
+            std::cout << static_cast<OwnerCondition*>(c)->getHas() << std::endl;
+            std::cout << (contains(player->getInventory(), static_cast<OwnerCondition*>(c)->getObject())) << std::endl;
             return true;
         }
+    } 
+    else if (type == "status") {
+        // Check Inventory:
+        std::string obj = c->getObject();
+        if (contains(player->getInventory(), obj))
+        else if (contains(player->getCurrentRoom()->getItems(), obj))
+        else if (contains(player->getCurrentRoom()->))
+        if (static_cast<StatusCondition>(c)->getObject)
     }
     return false;
 }
+
+bool checkTriggers(std::vector<Trigger*> triggers, std::string cmd, Player * player) {
+    if (player->getCurrentRoom()->hasTrigger(cmd) == NULL)
+        return false;
+        
+    bool condMet = true;
+    for (Trigger * trigger : triggers) {
+        if (trigger->getCommand() == cmd) {
+            std::vector<Condition*> trig_conditions = trigger->getCondition();
+            for (Condition * c : trig_conditions) 
+                condMet &= checkCondition(c, player);
+            if (condMet) {
+                for(std::string s : trigger->getPrints())
+                    std::cout << "\t" + s << std::endl;
+                // NEED : do actions
+            }
+        }
+    }
+    return condMet;
+}
+
+
 
 int main(int argc, char * argv[]) {
     XMLParser xml;
@@ -247,43 +280,16 @@ int main(int argc, char * argv[]) {
         full_cmd.pop_back();
         command = cmd_str.front();
 
+        // Check if Command Overrides Trigger
+        std::vector<Trigger *> triggers = player->getCurrentRoom()->getTrigger();
+        bool trig_override = checkTriggers(triggers, full_cmd, player);
+
         if (!valid_cmd(command)) {
             std::cout << "\n\tPlease type a valid command!\n\tPress 'h' to view them" << std::endl;
         } 
-        else if ((player->getCurrentRoom()->hasTrigger(full_cmd)) != NULL) {
-            std::vector<Trigger *> triggers = player->getCurrentRoom()->getTrigger();
-            bool condMet = true;
-
-            for (Trigger * trigger : triggers) {
-                if (trigger->getCommand() == full_cmd) {
-                    std::vector<Condition*> trig_conditions = trigger->getCondition();
-                    for (Condition * c : trig_conditions) 
-                        condMet &= checkCondition(c, player);
-                    if (condMet) {
-                        for(std::string s : trigger->getPrints())
-                            std::cout << "\t" + s << std::endl;
-                        // NEED : do actions
-                    }
-                }
-            }
-        }
+        else if (trig_override) {}
 		else if(command == "n" || command == "s" || command == "e" || command == "w") {
-            // Trigger * trigger = player->getCurrentRoom()->hasTrigger(command);
-            // bool condMet = true;
-            // if (trigger != NULL) {
-            //     std::vector<Condition*> trig_conditions = trigger->getCondition();
-            //     for (Condition * c : trig_conditions) {
-            //         condMet &= checkCondition(c, player);
-            //     }
-            //     if (condMet) {
-            //         for(std::string s : trigger->getPrints()) {
-            //             std::cout << "\t" + s << std::endl;
-            //         }
-            //     } else
-            //         player->move(command, map);
-            // } 
-            // else
-                player->move(command, map);
+            player->move(command, map);
 		}
 		else if(command == "north" || command == "south" || command == "east" || command == "west") {
 			player->move(command, map);

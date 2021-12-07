@@ -11,7 +11,12 @@ private:
 public:
     StatusCondition(std::string _object, std::string _status);
     bool conditionMet(std::string _object, std::string _status);
+
+    virtual std::string getObject();
+    virtual std::string getStatus();
+
     void display();
+    virtual void printAttrs();
 };
 
 #endif
