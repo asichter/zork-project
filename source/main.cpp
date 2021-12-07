@@ -254,6 +254,20 @@ int main(int argc, char * argv[]) {
             }
         }
         else if (command == "items"){
+            std::cout << "Inventory Items: " << std::endl;
+            for (Item * i : player->getInventory()) {
+                std::cout << i->getName() + ": " << static_cast<void*>(i) << std::endl;
+            }
+            std::cout << "Room Items: " << std::endl;
+            for (Item * i : player->getCurrentRoom()->getItem()) {
+                std::cout << i->getName() + ": " << static_cast<void*>(i) << std::endl;
+            }
+            std::cout << "\nMap Items: " << std::endl;
+            for (Item * i : map->getItems()) {
+                std::cout << i->getName() + ": " << static_cast<void*>(i) << std::endl;
+
+            }
+            std::cout << "\nMap Item Descriptions: " << std::endl;
             map->printItems();
         }
         else if (cmd_str.size() == 1) {
