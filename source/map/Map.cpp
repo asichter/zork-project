@@ -7,12 +7,14 @@ void Map::addItem(Item* _item) { items.push_back(_item); }
 void Map::addCreature(Creature* _creature) { creatures.push_back(_creature); }
 void Map::addContainer(Container* _container) { containers.push_back(_container); }
 void Map::addTrigger(Trigger * _trigger) { triggers.push_back(_trigger); }
+void Map::setGameOver(bool status) { gameOver = status; }
 
 std::vector<Room*> Map::getRooms() { return rooms; }
 std::vector<Item*> Map::getItems() { return items; }
 std::vector<Creature*> Map::getCreatures() { return creatures; }
 std::vector<Container*> Map::getContainers() { return containers; }
 std::vector<Trigger*> Map::getTriggers() { return triggers ;}
+bool Map::getGameOver() { return gameOver; }
 
 void Map::display() { std::cout << "Map: found map with " << getRooms().size() << " rooms" << std::endl; }
 

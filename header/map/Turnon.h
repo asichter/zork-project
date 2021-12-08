@@ -19,7 +19,7 @@ public:
     void display();
 
     std::string getPrint();
-    std::vector<std::string> getAction();
+    std::vector<std::string> getActions();
 };
 
 #endif

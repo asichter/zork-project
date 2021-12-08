@@ -40,13 +40,13 @@ std::vector<Trigger*> Item::getTrigger() { return triggers; }
 
 void Item::turn_on() {
     std::vector<std::string> action_vec;
-    std::string turnon_action = turnon->getAction().front();
+    std::string turnon_action = turnon->getActions().front();
     transform(turnon_action.begin(), turnon_action.end(), turnon_action.begin(), ::tolower);
     std::istringstream ss(turnon_action);
     std::string word;
     while (ss >> word) { action_vec.push_back(word); }
 
     std::string print_str = turnon->getPrint();
-    this->setStatus(action_vec.at(3));
+    this->setStatus(action_vec.at(1));
     std::cout << "\t" + print_str << std::endl;
 }

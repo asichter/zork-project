@@ -160,16 +160,22 @@ void Add(std::string object, std::string destination, Map * map) {
     Room * destination_room = contains(map->getRooms(), destination);
     if (destination_room != NULL) {
         Item * item = contains(map->getItems(), object);
-        if (item != NULL)
+        if (item != NULL) {
             destination_room->addItem(item);
+            item->setDeleted(false);
+        }
         else {
             Container * container = contains(map->getContainers(), object);
-            if (container != NULL)
+            if (container != NULL) {
                 destination_room->addContainer(container);
+                container->setDeleted(false);
+            }
             else {
                 Creature * creature = contains(map->getCreatures(), object);
-                if (creature != NULL)
-                    destination_room->addCreature(creature);
+                if (creature != NULL) {
+                    destination_room->addCreature(creature); 
+                    creature->setDeleted(false);
+                }
             }
         }
     }
@@ -205,7 +211,14 @@ void Update(std::string object, std::string status, Map * map){
     if (creature != NULL) { creature->setStatus(status); }
 }
 
-void GameOver() {}
+void Drop(Player * player, std::string item) {
+    Item * i = contains(player->getInventory(), item);
+    if (i != NULL) player->drop(i);
+}
+
+void GameOver(Map * map) {
+    map->setGameOver(true);
+}
 
 void help() {
 	// std::cout << "TODO: Implement help function." << std::endl;
@@ -223,6 +236,10 @@ void help() {
     \t put <item> in <container>: removes the item from your inventory and places it in the container\n \
     \t attack <creature> with <item>: attacks the creature with the item and displays the success or failure\n";
     std::cout << help_text << std::endl;
+}
+
+void notInInv(std::string item) {
+    std::cout << "\t" + item + " is not in your inventory..." << std::endl;
 }
 
 bool valid_cmd(std::string cmd) {
@@ -335,8 +352,10 @@ bool checkAllConditions(T * obj, Player * player, Map * map) {
                 Delete(action_vec.at(1), map);
             else if (action_vec.front() == "Update")
                 Update(action_vec.at(1), action_vec.at(3), map);
-            // else if (action_vec.front() == "Game" && action.at(1) == "Over")
-            //     GameOver();
+            else if (action_vec.front() == "Game" && action_vec.at(1) == "Over")
+                GameOver(map);
+            else if (action_vec.front() == "drop")
+                Drop(player, action_vec.at(1));
 
             action_vec.clear();
         }
@@ -485,48 +504,69 @@ int main(int argc, char * argv[]) {
             std::cout << "\n\t Please specify what item you would like to " + command + "!" << std::endl;
         }
 		else if(command == "take") {
+            // bool opened = false;
             std::string item_name = get_cmd_item(cmd_str);
             Item * i = contains(player->getCurrentRoom()->getItems(), item_name);
-            if (i == NULL) {
+            Item * inv = contains(player->getInventory(), item_name);
+            if (inv != NULL)
+                std::cout << item_name + "already in inventory" << std::endl;
+            else if (i != NULL)
+                player->take(i);
+            else {
                 std::vector<Container*> cs = player->getCurrentRoom()->getContainers();
                 for (auto c : cs) {
-                    if (c->isOpen())
-                        i = contains(c->getItems(), item_name);
+                    i = contains(c->getItems(), item_name);
+                    if (i != NULL){
+                        if (c->isOpen()) {
+                            if (i == NULL)
+                                std::cout << "\tYou don't see a " + item_name + " to take..." << std::endl;
+                            else 
+                                player->take(i);
+                        } else {
+                            std::cout << "\t" + c->getName() + " is not open." << std::endl;
+                        }
+                    }            
                 }
             }
-            if (i != NULL) player->take(i);
 		}
 		else if(command == "drop") {
             std::string item_name = get_cmd_item(cmd_str);
             Item * i = contains(player->getInventory(), item_name);
             if (i != NULL) player->drop(i);
+            else notInInv(item_name);
 		}
         else if(command == "open") {
             std::string item_name = get_cmd_item(cmd_str);
             Container * c = contains(player->getCurrentRoom()->getContainers(), item_name);
             if (c != NULL) player->open(c);
+            else if (full_cmd != "open exit") std::cout << "\tThere is no " + item_name + " to open..." << std::endl;
         }
         else if (command == "read") {
             std::string item_name = get_cmd_item(cmd_str);
             Item * item = contains(player->getInventory(), item_name);
-            player->read(item, item_name);
+            if (item != NULL)
+                player->read(item, item_name);
+            else
+                notInInv(item_name);
         }
         else if (command == "put") {
             std::vector<std::string> put_str = parse_put(cmd_str);
             if (!put_str.empty()) {
                 Item * item = contains(player->getInventory(), put_str.at(0));
-                Container * container = contains(player->getCurrentRoom()->getContainers(), put_str.at(1));
-
-                if (item == NULL) {
-                    std::cout << "\t" + put_str.at(0) + " not in inventory" << std::endl;
-                } else if (container == NULL || container->getDeleted()) {
-                    std::cout << "\tYou cannot access that container!" << std::endl;
-                } else if (contains(container->getAccepts(), put_str.at(0)) != "") {
-                    player->put(item, container);
-                } else if (!container->isOpen()) {
-                    std::cout << "\tCannot put " + put_str.at(0) + " in closed " + put_str.at(1) + "." << std::endl;
-                } else { 
-                    player->put(item, container);
+                if (item == NULL) 
+                    notInInv(put_str.at(0));
+                else {
+                    Container * container = contains(player->getCurrentRoom()->getContainers(), put_str.at(1));
+                    if (container == NULL || container->getDeleted()) {
+                        std::cout << "\tYou cannot access that container!" << std::endl;
+                    } else if (!(container->getAccepts().empty())) {
+                        if (contains(container->getAccepts(), put_str.at(0)) != "") 
+                            player->put(item, container);
+                    } else if (!container->isOpen()) {
+                        std::cout << "\tCannot put " + put_str.at(0) + " in closed " + put_str.at(1) + "." << std::endl;
+                    } else { 
+                        player->put(item, container);
+                    }
                 }
             }
         }
@@ -536,9 +576,22 @@ int main(int argc, char * argv[]) {
                 std::string item_name = get_cmd_item(cmd_str);
                 Item * item = contains(player->getInventory(), item_name);
                 if (item == NULL)
-                    std::cout << "\t" + item_name + " not in inventory." << std::endl;
-                else
+                    notInInv(item_name);
+                else {
                     item->turn_on();
+                    if (!(item->getTurnon()->getActions().empty())) {
+                        for (std::string a : item->getTurnon()->getActions()) {
+                            std::vector<std::string> action_vec;
+                            std::istringstream ss(a);
+                            std::string word;
+                            while (ss >> word) { action_vec.push_back(word); }
+
+                            if (action_vec.front() == "drop")
+                                Drop(player, action_vec.at(1));
+                            action_vec.clear();
+                        }
+                    }
+                }
             }
         }
         else if (command == "attack"){
@@ -547,7 +600,7 @@ int main(int argc, char * argv[]) {
             if (contains(player->getCurrentRoom()->getCreatures(), creature_of_attack) == NULL)
                 std::cout << "\tYou don't see a " + creature_of_attack + " in this room..." << std::endl;
             else if (contains(player->getInventory(), item_of_attack) == NULL)
-                std::cout << "\tYou don't have the " + item_of_attack + " in your inventory..." << std::endl;
+                notInInv(item_of_attack);
             else {
                 std::cout << "\tYou assault the " + creature_of_attack + " with the " + item_of_attack << std::endl;
                 std::vector<Creature*> creatures = player->getCurrentRoom()->getCreatures();
@@ -570,7 +623,7 @@ int main(int argc, char * argv[]) {
             checkEffectTriggers(player, map);
         // }
         
-	} while(input != "open exit" || !player->atExit());
+	} while(!(map->getGameOver()) && (input != "open exit" || !player->atExit()));
 
 	std::cout << "\nVictory!" << std::endl;
 

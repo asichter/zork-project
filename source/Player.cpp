@@ -152,7 +152,7 @@ void Player::read(Item * item, std::string name) {
 void Player::put(Item * item, Container * container) { 
     remove(item);
     container->addItem(item);
-
+    std::cout << "\t" + item->getName() + " put in " + container->getName() + "." << std::endl;
 }
 
 void Player::turn_on(Item * item) { }

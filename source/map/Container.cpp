@@ -46,7 +46,7 @@ void Container::removeItem(Item* item) {
 bool Container::isOpen() { return openStatus; }
 void Container::open() { 
     openStatus = 1; 
-    std::string printString = "";
+    std::string printString = "\t";
     printString += getName();
     if (getItems().empty())
         printString += " is empty.";
