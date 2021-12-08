@@ -29,7 +29,7 @@ public:
 
     virtual std::string getWriting();
     virtual Turnon* getTurnon();
-    virtual std::vector<Trigger*> getTrigger();
+    virtual std::vector<Trigger*> getTriggers();
 
     virtual void turn_on();
 };

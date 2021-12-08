@@ -36,7 +36,7 @@ void Item::addTrigger(Trigger* _trigger) { triggers.push_back(_trigger); }
 
 std::string Item::getWriting() { return writing; }
 Turnon* Item::getTurnon() { return turnon; }
-std::vector<Trigger*> Item::getTrigger() { return triggers; }
+std::vector<Trigger*> Item::getTriggers() { return triggers; }
 
 void Item::turn_on() {
     std::vector<std::string> action_vec;

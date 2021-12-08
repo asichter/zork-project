@@ -6,6 +6,11 @@
 #include <cctype>
 #include <vector>
 
+std::vector<std::string> parse_put(std::vector<std::string> cmd_str);
+template <typename T>
+bool checkAllConditions(T * obj, Player * player, Map * map);
+void notInInv(std::string item);
+
 const unsigned int NUM_INDENTS_PER_SPACE=2;
 const std::vector <std::string> VALID_CMDS = 
     {"n", "s", "e", "w",
@@ -216,6 +221,70 @@ void Drop(Player * player, std::string item) {
     if (i != NULL) player->drop(i);
 }
 
+void Take(Player * player, std::string item_name) {
+    Item * i = contains(player->getCurrentRoom()->getItems(), item_name);
+    Item * inv = contains(player->getInventory(), item_name);
+    if (inv != NULL)
+        std::cout << item_name + "already in inventory" << std::endl;
+    else if (i != NULL)
+        player->take(i);
+    else {
+        std::vector<Container*> cs = player->getCurrentRoom()->getContainers();
+        for (auto c : cs) {
+            i = contains(c->getItems(), item_name);
+            if (i != NULL){
+                if (c->isOpen()) {
+                    if (i == NULL)
+                        std::cout << "\tYou don't see a " + item_name + " to take..." << std::endl;
+                    else 
+                        player->take(i);
+                } else {
+                    std::cout << "\t" + c->getName() + " is not open." << std::endl;
+                }
+            }            
+        }
+    }
+}
+
+void Attack(Player * player, std::string creature_of_attack, std::string item, Map * map) {
+    std::string item_of_attack = item; //  NEED: IMPLEMENT MULTI WORD HANDLING
+    Creature * creature = contains(player->getCurrentRoom()->getCreatures(), creature_of_attack);
+    if (creature == NULL)
+        std::cout << "\tYou don't see a " + creature_of_attack + " in this room..." << std::endl;
+    else if (contains(player->getInventory(), item_of_attack) == NULL)
+        notInInv(item_of_attack);
+    else {
+        std::cout << "\tYou assault the " + creature_of_attack + " with the " + item_of_attack << std::endl;
+        for (std::string v : creature->getVulnerabilities()) {
+            if (v == item_of_attack) {
+                checkAllConditions(creature->getAttack(), player, map);
+            }
+        }
+    }
+}
+
+void Put(Player * player, std::vector<std::string> cmd_str) {
+    std::vector<std::string> put_str = parse_put(cmd_str);
+    if (!put_str.empty()) {
+        Item * item = contains(player->getInventory(), put_str.at(0));
+        if (item == NULL) 
+            notInInv(put_str.at(0));
+        else {
+            Container * container = contains(player->getCurrentRoom()->getContainers(), put_str.at(1));
+            if (container == NULL || container->getDeleted()) {
+                std::cout << "\tYou cannot access that container!" << std::endl;
+            } else if (!(container->getAccepts().empty())) {
+                if (contains(container->getAccepts(), put_str.at(0)) != "") 
+                    player->put(item, container);
+            } else if (!container->isOpen()) {
+                std::cout << "\tCannot put " + put_str.at(0) + " in closed " + put_str.at(1) + "." << std::endl;
+            } else { 
+                player->put(item, container);
+            }
+        }
+    }
+}
+
 void GameOver(Map * map) {
     map->setGameOver(true);
 }
@@ -333,6 +402,8 @@ bool checkCondition(Condition* c, Player * player, Map * map){
 
 template <typename T>
 bool checkAllConditions(T * obj, Player * player, Map * map) {
+    if (obj == NULL)
+        return false;
     bool conditionsMet = true;
     for (Condition * c : obj->getConditions()) {
         conditionsMet &= checkCondition(c, player, map);
@@ -346,6 +417,12 @@ bool checkAllConditions(T * obj, Player * player, Map * map) {
             std::string word;
             while (ss >> word) { action_vec.push_back(word); }
 
+            std::string full_cmd;
+            for (std::string s : action_vec) {
+                full_cmd += s + " ";
+            }
+            full_cmd.pop_back();
+
             if (action_vec.front() == "Add")
                 Add(action_vec.at(1), action_vec.at(3), map);
             else if (action_vec.front() == "Delete")
@@ -356,6 +433,12 @@ bool checkAllConditions(T * obj, Player * player, Map * map) {
                 GameOver(map);
             else if (action_vec.front() == "drop")
                 Drop(player, action_vec.at(1));
+            else if (action_vec.front() == "attack")
+                Attack(player, action_vec.at(1), action_vec.at(3), map);
+            else if (action_vec.front() == "take")
+                Take(player, action_vec.at(1));
+            else if (action_vec.front() == "put")
+                Put(player, action_vec);
 
             action_vec.clear();
         }
@@ -364,6 +447,9 @@ bool checkAllConditions(T * obj, Player * player, Map * map) {
 }
 
 bool checkCmdTriggers(std::vector<Trigger*> triggers, std::string cmd, Player * player, Map * map) {
+    if (triggers.empty())
+        return false;
+
     if (player->getCurrentRoom()->hasTrigger(cmd) == NULL)
         return false;
         
@@ -453,8 +539,20 @@ int main(int argc, char * argv[]) {
         command = cmd_str.front();
 
         // Check if Command Overrides Trigger
-        std::vector<Trigger *> triggers = player->getCurrentRoom()->getTriggers();
-        bool trig_override = checkCmdTriggers(triggers, full_cmd, player, map);
+        bool trig_override = false;
+        trig_override |= checkCmdTriggers(player->getCurrentRoom()->getTriggers(), full_cmd, player, map);
+
+        for (Item * i : player->getCurrentRoom()->getItems())
+            trig_override |= checkCmdTriggers(i->getTriggers(), full_cmd, player, map);
+
+        for (Item * i : player->getInventory())
+            trig_override |= checkCmdTriggers(i->getTriggers(), full_cmd, player, map);    
+
+        for (Container * c : player->getCurrentRoom()->getContainers())
+            trig_override |= checkCmdTriggers(c->getTriggers(), full_cmd, player, map);  
+
+        for (Creature * c : player->getCurrentRoom()->getCreatures())
+            trig_override |= checkCmdTriggers(c->getTriggers(), full_cmd, player, map);  
 
         if (!valid_cmd(command)) {
             std::cout << "\n\tPlease type a valid command!\n\tPress 'h' to view them" << std::endl;
@@ -597,21 +695,17 @@ int main(int argc, char * argv[]) {
         else if (command == "attack"){
             std::string creature_of_attack = cmd_str.at(1); // NEED: IMPLEMENT MULTI WORD HANDLING
             std::string item_of_attack = cmd_str.at(3); //  NEED: IMPLEMENT MULTI WORD HANDLING
-            if (contains(player->getCurrentRoom()->getCreatures(), creature_of_attack) == NULL)
+            Creature * creature = contains(player->getCurrentRoom()->getCreatures(), creature_of_attack);
+            if (creature == NULL)
                 std::cout << "\tYou don't see a " + creature_of_attack + " in this room..." << std::endl;
             else if (contains(player->getInventory(), item_of_attack) == NULL)
                 notInInv(item_of_attack);
             else {
                 std::cout << "\tYou assault the " + creature_of_attack + " with the " + item_of_attack << std::endl;
-                std::vector<Creature*> creatures = player->getCurrentRoom()->getCreatures();
-                for (Creature * c : creatures) {
-                    if (c->getName() == creature_of_attack) {
-                        for (std::string v : c->getVulnerabilities()) {
-                            if (v == item_of_attack) {
-                                checkAllConditions(c->getAttack(), player, map);
-                            }
-                        }
-                    } 
+                for (std::string v : creature->getVulnerabilities()) {
+                    if (v == item_of_attack) {
+                        checkAllConditions(creature->getAttack(), player, map);
+                    }
                 }
             }
         }
