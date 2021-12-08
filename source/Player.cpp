@@ -38,7 +38,7 @@ void Player::move(std::string dir, Map* map) {
     // check borders of current room
     // if valid, move there,
     // else print "cannot move that way"
-    std::vector<Border*> borders = currentRoom->getBorder();
+    std::vector<Border*> borders = currentRoom->getBorders();
     std::vector<Room*> rooms = map->getRooms();
     std::string nextRoom = "none";
 
@@ -80,8 +80,8 @@ void Player::move(std::string dir, Map* map) {
                 currentRoom = r;
             }
         }
-        std::cout << "Moved into " << currentRoom->getName() << std::endl;
-        std::cout << currentRoom->getDescription() << std::endl;
+        std::cout << "\tMoved into " << currentRoom->getName() << std::endl;
+        std::cout << "\t" + currentRoom->getDescription() << std::endl;
     }
 }
 
@@ -102,18 +102,18 @@ void Player::printInventory() {
             std::cout << "   -" << i->getName() << std::endl;
     }
     else {
-        std::cout << "Empty." << std::endl;
+        std::cout << "\tEmpty." << std::endl;
     }
 }
 
 void Player::take(Item * item) {
     inventory.push_back(item);
-    if (contains(currentRoom->getItem(), item))
+    if (contains(currentRoom->getItems(), item))
         currentRoom->removeItem(item);
     else  {
-        std::vector<Container*> cs = currentRoom->getContainer();
+        std::vector<Container*> cs = currentRoom->getContainers();
         for (auto c : cs) {
-            if(contains(c->getItem(), item))
+            if(contains(c->getItems(), item))
                 c->removeItem(item);
         }
     }

@@ -11,6 +11,7 @@ void Creature::printAttrs()
 {
     std::cout << "Creature: " << getName() << std::endl;
     std::cout << "  Status: " << getStatus() << std::endl;
+    std::cout << "  Deleted?: " << getDeleted() << std::endl;
     std::cout << "  Attack: " << getAttack() << std::endl;
     std::cout << "  Triggers: " << std::endl;
     for (Trigger* t : triggers)
@@ -27,6 +28,6 @@ void Creature::addVulnerability(std::string _vulnerability) { vulnerabilities.pu
 void Creature::addAttack(Attack* _attack) { attack = _attack; }
 void Creature::addTrigger(Trigger* _trigger) { triggers.push_back(_trigger); }
 
-std::vector<std::string> Creature::getVulnerability() { return vulnerabilities; }
+std::vector<std::string> Creature::getVulnerabilities() { return vulnerabilities; }
 Attack * Creature::getAttack() { return attack; }
-std::vector<Trigger*> Creature::getTrigger() { return triggers; }
+std::vector<Trigger*> Creature::getTriggers() { return triggers; }

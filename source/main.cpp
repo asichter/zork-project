@@ -12,13 +12,14 @@ const std::vector <std::string> VALID_CMDS =
     "north", "south", "east", "west",
     "i", "inventory",
     "take", "drop", "open", "read", "put", "turn", "attack",
-    "current", "inventorystatus", "items"};
+    "current", "inventorystatus", "items", "containers"};
 
 template <typename T>
 T* contains(std::vector<T> vec, const T & elem){
     for (auto * a : vec) {
         if (a == elem)
-            return a;
+            if (a->getDeleted() != true)
+                return a;
     }
     return NULL;
 }
@@ -26,9 +27,19 @@ template <typename T>
 T contains(std::vector<T> vec, const std::string name) {
     for (auto * e : vec) {
         if (e->getName() == name)
-            return e;
+            if (e->getDeleted() != true)
+                return e;
     }
     return NULL;
+}
+
+std::string contains(std::vector<std::string> vec, const std::string name) {
+    for (std::string e : vec) {
+        std::cout << e << std::endl;
+        if (e == name)
+            return e;
+    }
+    return "";
 }
 
 const char * getIndent( unsigned int numIndents )
@@ -144,6 +155,58 @@ void dump_to_stdout(const char* pFilename)
 	}
 }
 
+void Add(std::string object, std::string destination, Map * map) {
+    
+    Room * destination_room = contains(map->getRooms(), destination);
+    if (destination_room != NULL) {
+        Item * item = contains(map->getItems(), object);
+        if (item != NULL)
+            destination_room->addItem(item);
+        else {
+            Container * container = contains(map->getContainers(), object);
+            if (container != NULL)
+                destination_room->addContainer(container);
+            else {
+                Creature * creature = contains(map->getCreatures(), object);
+                if (creature != NULL)
+                    destination_room->addCreature(creature);
+            }
+        }
+    }
+    Container * destination_container = contains(map->getContainers(), destination);
+    if (destination_container != NULL) {
+        Item * item = contains(map->getItems(), object);
+        if (item != NULL)
+            destination_container->addItem(item);
+    }    
+}
+
+void Delete(std::string object, Map * map) {
+    Room * room = contains(map->getRooms(), object);
+    Item * item = contains(map->getItems(), object);
+    Container * container = contains(map->getContainers(), object);
+    Creature * creature = contains(map->getCreatures(), object);
+
+    if (room != NULL) { room->setDeleted(true); }
+    if (item != NULL) { item->setDeleted(true); }
+    if (container != NULL) { container->setDeleted(true); }
+    if (creature != NULL) { creature->setDeleted(true); }
+ }
+
+void Update(std::string object, std::string status, Map * map){
+    Room * room = contains(map->getRooms(), object);
+    Item * item = contains(map->getItems(), object);
+    Container * container = contains(map->getContainers(), object);
+    Creature * creature = contains(map->getCreatures(), object);
+
+    if (room != NULL) { room->setStatus(status); }
+    if (item != NULL) { item->setStatus(status); }
+    if (container != NULL) { container->setStatus(status); }
+    if (creature != NULL) { creature->setStatus(status); }
+}
+
+void GameOver() {}
+
 void help() {
 	// std::cout << "TODO: Implement help function." << std::endl;
     const char * help_text = "\n \
@@ -203,46 +266,136 @@ std::vector<std::string> parse_put(std::vector<std::string> cmd_str) {
     return put_str;
 }
 
-bool checkCondition(Condition* c, Player * player){
+bool checkCondition(Condition* c, Player * player, Map * map){
     std::string type = c->getType();
     if(type == "owner") {
-        if (static_cast<OwnerCondition*>(c)->getHas() == (contains(player->getInventory(), static_cast<OwnerCondition*>(c)->getObject()) != NULL)) {
-            std::cout << static_cast<OwnerCondition*>(c)->getHas() << std::endl;
-            std::cout << (contains(player->getInventory(), static_cast<OwnerCondition*>(c)->getObject())) << std::endl;
-            return true;
+        // static_cast<OwnerCondition*>(c)->printAttrs();
+        bool has = static_cast<OwnerCondition*>(c)->getHas();
+        std::string object = static_cast<OwnerCondition*>(c)->getObject();
+        std::string owner = static_cast<OwnerCondition*>(c)->getOwner();
+
+        if (owner == "inventory") {
+            if (has == (contains(player->getInventory(), object) != NULL))
+                return true;
+        }
+        else if (player->getCurrentRoom()->getName() == owner) {
+            if (has == (contains(player->getCurrentRoom()->getItems(), object) != NULL))
+                return true;
+        }
+        else if (contains(player->getCurrentRoom()->getContainers(), owner) != NULL) {
+            for (Container * container : player->getCurrentRoom()->getContainers()) {
+                if (container->getName() == owner) {
+                    if (has == (contains(container->getItems(), object) != NULL))
+                        return true;
+                }
+            }
         }
     } 
     else if (type == "status") {
-        // Check Inventory:
-        std::string obj = c->getObject();
-        if (contains(player->getInventory(), obj))
-        else if (contains(player->getCurrentRoom()->getItems(), obj))
-        else if (contains(player->getCurrentRoom()->))
-        if (static_cast<StatusCondition>(c)->getObject)
+        // static_cast<StatusCondition*>(c)->printAttrs();
+        std::string obj = static_cast<StatusCondition*>(c)->getObject();
+        std::string status = static_cast<StatusCondition*>(c)->getStatus();
+        for (Item * i : player->getInventory()) {
+            if (i->getName() == obj) {
+                if (i->getStatus() == status) {
+                    return true;
+                }
+            }
+        }
+        for (Item * i : player->getCurrentRoom()->getItems()) {
+            if ((i->getName() == obj) && (i->getStatus() == status))
+                return true;
+        }
+        for (Container * container : player->getCurrentRoom()->getContainers()) {
+            if ((container->getName() == obj) && (container->getStatus() == status))
+                return true;
+        }
     }
     return false;
 }
 
-bool checkTriggers(std::vector<Trigger*> triggers, std::string cmd, Player * player) {
+template <typename T>
+bool checkAllConditions(T * obj, Player * player, Map * map) {
+    bool conditionsMet = true;
+    for (Condition * c : obj->getConditions()) {
+        conditionsMet &= checkCondition(c, player, map);
+    }
+    if (conditionsMet) {
+        std::vector <std::string> action_vec;
+        for(auto s : obj->getPrints())
+            std::cout << "\t" + s << std::endl;
+        for(auto a : obj->getActions()) {
+            std::istringstream ss(a);
+            std::string word;
+            while (ss >> word) { action_vec.push_back(word); }
+
+            if (action_vec.front() == "Add")
+                Add(action_vec.at(1), action_vec.at(3), map);
+            else if (action_vec.front() == "Delete")
+                Delete(action_vec.at(1), map);
+            else if (action_vec.front() == "Update")
+                Update(action_vec.at(1), action_vec.at(3), map);
+            // else if (action_vec.front() == "Game" && action.at(1) == "Over")
+            //     GameOver();
+
+            action_vec.clear();
+        }
+    }
+    return conditionsMet;
+}
+
+bool checkCmdTriggers(std::vector<Trigger*> triggers, std::string cmd, Player * player, Map * map) {
     if (player->getCurrentRoom()->hasTrigger(cmd) == NULL)
         return false;
         
     bool condMet = true;
     for (Trigger * trigger : triggers) {
-        if (trigger->getCommand() == cmd) {
-            std::vector<Condition*> trig_conditions = trigger->getCondition();
-            for (Condition * c : trig_conditions) 
-                condMet &= checkCondition(c, player);
-            if (condMet) {
-                for(std::string s : trigger->getPrints())
-                    std::cout << "\t" + s << std::endl;
-                // NEED : do actions
-            }
+        if (trigger->getCommand() == cmd && trigger->getType() != "used") {
+            condMet &= checkAllConditions(trigger, player, map);
+        }
+        if (condMet && trigger->getType() != "permanent") {
+            trigger->setType("used");
         }
     }
     return condMet;
 }
 
+bool checkEffectTriggers(Player * player, Map * map) {
+    bool condMet = false;
+    bool return_val = false;
+    for (Trigger * t : player->getCurrentRoom()->getTriggers()) {
+        if (t->getCommand() == "" && t->getType() != "used") {
+            return_val = checkAllConditions(t, player, map);
+            condMet &= return_val;
+        }
+        if (return_val && t->getType() != "permanent") {
+            t->setType("used");
+        }
+    }
+    for (Container * c : player->getCurrentRoom()->getContainers()) {
+        for (Trigger * t : c->getTriggers()) {
+            if (t->getCommand() == "" && t->getType() != "used") {
+                return_val = checkAllConditions(t, player, map);
+                condMet &= return_val;
+            }
+            if (return_val && t->getType() != "permanent") {
+                t->setType("used");
+            }
+        }
+    }
+    for (Creature * c : player->getCurrentRoom()->getCreatures()) {
+        for (Trigger * t : c->getTriggers()) {
+            if (t->getCommand() == "" && t->getType() != "used") {
+                return_val = checkAllConditions(t, player, map);
+                condMet &= return_val;
+            }
+            if (return_val && t->getType() != "permanent") {
+                t->setType("used");
+            }
+        }
+    }
+    return condMet;
+}
 
 
 int main(int argc, char * argv[]) {
@@ -281,8 +434,8 @@ int main(int argc, char * argv[]) {
         command = cmd_str.front();
 
         // Check if Command Overrides Trigger
-        std::vector<Trigger *> triggers = player->getCurrentRoom()->getTrigger();
-        bool trig_override = checkTriggers(triggers, full_cmd, player);
+        std::vector<Trigger *> triggers = player->getCurrentRoom()->getTriggers();
+        bool trig_override = checkCmdTriggers(triggers, full_cmd, player, map);
 
         if (!valid_cmd(command)) {
             std::cout << "\n\tPlease type a valid command!\n\tPress 'h' to view them" << std::endl;
@@ -312,7 +465,7 @@ int main(int argc, char * argv[]) {
                 std::cout << i->getName() + ": " << static_cast<void*>(i) << std::endl;
             }
             std::cout << "Room Items: " << std::endl;
-            for (Item * i : player->getCurrentRoom()->getItem()) {
+            for (Item * i : player->getCurrentRoom()->getItems()) {
                 std::cout << i->getName() + ": " << static_cast<void*>(i) << std::endl;
             }
             std::cout << "\nMap Items: " << std::endl;
@@ -323,17 +476,22 @@ int main(int argc, char * argv[]) {
             std::cout << "\nMap Item Descriptions: " << std::endl;
             map->printItems();
         }
+        else if (command == "containers") {
+            for(Container * c : player->getCurrentRoom()->getContainers()) {
+                c->printAttrs();
+            }
+        }
         else if (cmd_str.size() == 1) {
             std::cout << "\n\t Please specify what item you would like to " + command + "!" << std::endl;
         }
 		else if(command == "take") {
             std::string item_name = get_cmd_item(cmd_str);
-            Item * i = contains(player->getCurrentRoom()->getItem(), item_name);
+            Item * i = contains(player->getCurrentRoom()->getItems(), item_name);
             if (i == NULL) {
-                std::vector<Container*> cs = player->getCurrentRoom()->getContainer();
+                std::vector<Container*> cs = player->getCurrentRoom()->getContainers();
                 for (auto c : cs) {
                     if (c->isOpen())
-                        i = contains(c->getItem(), item_name);
+                        i = contains(c->getItems(), item_name);
                 }
             }
             if (i != NULL) player->take(i);
@@ -345,7 +503,7 @@ int main(int argc, char * argv[]) {
 		}
         else if(command == "open") {
             std::string item_name = get_cmd_item(cmd_str);
-            Container * c = contains(player->getCurrentRoom()->getContainer(), item_name);
+            Container * c = contains(player->getCurrentRoom()->getContainers(), item_name);
             if (c != NULL) player->open(c);
         }
         else if (command == "read") {
@@ -357,13 +515,16 @@ int main(int argc, char * argv[]) {
             std::vector<std::string> put_str = parse_put(cmd_str);
             if (!put_str.empty()) {
                 Item * item = contains(player->getInventory(), put_str.at(0));
-                Container * container = contains(player->getCurrentRoom()->getContainer(), put_str.at(1));
+                Container * container = contains(player->getCurrentRoom()->getContainers(), put_str.at(1));
+
                 if (item == NULL) {
                     std::cout << "\t" + put_str.at(0) + " not in inventory" << std::endl;
-                } else if (container == NULL) {
+                } else if (container == NULL || container->getDeleted()) {
                     std::cout << "\tYou cannot access that container!" << std::endl;
+                } else if (contains(container->getAccepts(), put_str.at(0)) != "") {
+                    player->put(item, container);
                 } else if (!container->isOpen()) {
-                    std::cout << "\tCannot add " + put_str.at(0) + " to closed " + put_str.at(1) + "." << std::endl;
+                    std::cout << "\tCannot put " + put_str.at(0) + " in closed " + put_str.at(1) + "." << std::endl;
                 } else { 
                     player->put(item, container);
                 }
@@ -381,11 +542,33 @@ int main(int argc, char * argv[]) {
             }
         }
         else if (command == "attack"){
-
+            std::string creature_of_attack = cmd_str.at(1); // NEED: IMPLEMENT MULTI WORD HANDLING
+            std::string item_of_attack = cmd_str.at(3); //  NEED: IMPLEMENT MULTI WORD HANDLING
+            if (contains(player->getCurrentRoom()->getCreatures(), creature_of_attack) == NULL)
+                std::cout << "\tYou don't see a " + creature_of_attack + " in this room..." << std::endl;
+            else if (contains(player->getInventory(), item_of_attack) == NULL)
+                std::cout << "\tYou don't have the " + item_of_attack + " in your inventory..." << std::endl;
+            else {
+                std::cout << "\tYou assault the " + creature_of_attack + " with the " + item_of_attack << std::endl;
+                std::vector<Creature*> creatures = player->getCurrentRoom()->getCreatures();
+                for (Creature * c : creatures) {
+                    if (c->getName() == creature_of_attack) {
+                        for (std::string v : c->getVulnerabilities()) {
+                            if (v == item_of_attack) {
+                                checkAllConditions(c->getAttack(), player, map);
+                            }
+                        }
+                    } 
+                }
+            }
         }
 		else if(command == "h" || command == "help") {
 			help();
 		}
+        // bool check_trig = true;
+        // while (check_trig) {
+            checkEffectTriggers(player, map);
+        // }
         
 	} while(input != "open exit" || !player->atExit());
 

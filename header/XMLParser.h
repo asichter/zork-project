@@ -13,6 +13,7 @@ private:
     std::vector<Item*> items;
     std::vector<Creature*> creatures;
     std::vector<Container*> containers;
+    std::vector<Trigger*> triggers;
 
 public:
     Attack * parseAttack(TiXmlElement *);
@@ -29,6 +30,7 @@ public:
     virtual void addItem(Item * item);
     virtual void addCreature(Creature * creature);
     virtual void addContainer(Container * container);
+    virtual void addTrigger(Trigger * trigger);
     virtual void printVectors();
 };
 

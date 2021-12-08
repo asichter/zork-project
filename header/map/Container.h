@@ -32,8 +32,8 @@ public:
     virtual void close();
 
     virtual std::vector<std::string> getAccepts();
-    virtual std::vector<Trigger*> getTrigger();
-    virtual std::vector<Item*> getItem();
+    virtual std::vector<Trigger*> getTriggers();
+    virtual std::vector<Item*> getItems();
     std::string getName();
 };
 

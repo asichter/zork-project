@@ -10,6 +10,7 @@ protected:
     std::string description;
     std::string status;
     std::string type;
+    bool deleted = false;
 
 public:
     virtual void display() = 0;
@@ -17,11 +18,13 @@ public:
     virtual void setDescription(std::string _description);
     virtual void setStatus(std::string _status);
     virtual void setType(std::string _type);
+    virtual void setDeleted(bool _status);
 
     virtual std::string getName();
     virtual std::string getDescription();
     virtual std::string getStatus();
     virtual std::string getType();
+    virtual bool getDeleted();
 };
 
 #endif

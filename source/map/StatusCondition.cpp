@@ -17,12 +17,12 @@ bool StatusCondition::conditionMet(std::string _object, std::string _status) {
 }
 
 std::string StatusCondition::getObject() { return object; }
-std::string StatusCondition::getOwner() { return owner; }
+std::string StatusCondition::getStatus() { return status; }
 
 void StatusCondition::display() { std::cout << "Condition: " << getType() << std::endl; }
 
 void StatusCondition::printAttrs() {
     std::cout << "type: " + getType() << std::endl;
     std::cout << "object: " + getObject() << std::endl;
-    std::cout << "owner: " + getOwner() << std::endl;
+    std::cout << "status: " + getStatus() << std::endl;
 }

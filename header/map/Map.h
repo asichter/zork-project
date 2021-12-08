@@ -15,6 +15,7 @@ private:
     std::vector<Item*> items;
     std::vector<Creature*> creatures;
     std::vector<Container*> containers;
+    std::vector<Trigger*> triggers;
 
 public:
     Map();
@@ -24,11 +25,13 @@ public:
     virtual void addItem(Item * _item);
     virtual void addCreature(Creature * _creature);
     virtual void addContainer(Container* _container);
+    virtual void addTrigger(Trigger * _trigger);
 
     virtual std::vector<Room*> getRooms();
     virtual std::vector<Item*> getItems();
     virtual std::vector<Creature*> getCreatures();
     virtual std::vector<Container*> getContainers();
+    virtual std::vector<Trigger*> getTriggers();
 
     virtual void printRooms();
     virtual void printItems();

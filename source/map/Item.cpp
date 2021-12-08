@@ -16,6 +16,7 @@ void Item::printAttrs()
 {
     std::cout << "Item: " << getName() << std::endl;
     std::cout << "  Status: " << getStatus() << std::endl;
+    std::cout << "  Deleted?: " << getDeleted() << std::endl;
     std::cout << "  Description: " << getDescription() << std::endl;
     std::cout << "  Writing: " << getWriting() << std::endl;
     std::cout << "  Turnon: "  << std::endl;

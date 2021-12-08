@@ -25,9 +25,9 @@ public:
     virtual void addAttack(Attack* _attack);
     virtual void addTrigger(Trigger* _trigger);
 
-    virtual std::vector<std::string> getVulnerability();
+    virtual std::vector<std::string> getVulnerabilities();
     virtual Attack* getAttack();
-    virtual std::vector<Trigger*> getTrigger();
+    virtual std::vector<Trigger*> getTriggers();
 };
 
 #endif

@@ -52,11 +52,11 @@ void Room::removeItem(Item* item) {
     }
 }
 
-std::vector<Border*> Room::getBorder() { return borders; }
-std::vector<Item*> Room::getItem() { return items; }
-std::vector<Container*> Room::getContainer() { return containers; }
-std::vector<Creature*> Room::getCreature() { return creatures; }
-std::vector<Trigger*> Room::getTrigger() { return triggers; }
+std::vector<Border*> Room::getBorders() { return borders; }
+std::vector<Item*> Room::getItems() { return items; }
+std::vector<Container*> Room::getContainers() { return containers; }
+std::vector<Creature*> Room::getCreatures() { return creatures; }
+std::vector<Trigger*> Room::getTriggers() { return triggers; }
 
 Trigger * Room::hasTrigger(std::string cmd) {
     for (Trigger * t : triggers) {

@@ -28,7 +28,7 @@ public:
     virtual void printAttrs();
 
     virtual std::string getCommand();
-    virtual std::vector<Condition*> getCondition();
+    virtual std::vector<Condition*> getConditions();
     virtual std::vector<std::string> getPrints();
     virtual std::vector<std::string> getActions();
 };

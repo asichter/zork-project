@@ -12,9 +12,10 @@ void Trigger::addPrints(std::string _print) { prints.push_back(_print); }
 void Trigger::addAction(std::string _action) { actions.push_back(_action); }
 void Trigger::printAttrs(){
     std::cout << "\tType: " + getType() << std::endl;
+    std::cout << "\tDeleted?: " << getDeleted() << std::endl;
     std::cout << "\tCommand: " + getCommand() << std::endl;
     std::cout << "\tCondition: " << std::endl;
-    for (Condition * c : getCondition()) {
+    for (Condition * c : getConditions()) {
         std::cout << "\t\t";
         c->display();
     }
@@ -29,7 +30,7 @@ void Trigger::printAttrs(){
 }
 
 std::string Trigger::getCommand() { return command; }
-std::vector<Condition*> Trigger::getCondition() { return conditions; }
+std::vector<Condition*> Trigger::getConditions() { return conditions; }
 std::vector<std::string> Trigger::getPrints() { return prints; }
 std::vector<std::string> Trigger::getActions() { return actions; }
 

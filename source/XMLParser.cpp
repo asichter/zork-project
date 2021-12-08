@@ -3,24 +3,10 @@
 #include <iostream>
 #include <vector>
 
-void XMLParser::addItem(Item* item)
-{
-    // std::cout << "item added" << std::endl;
-    items.push_back(item);
-}
-
-
-void XMLParser::addCreature(Creature * creature)
-{
-    creatures.push_back(creature);
-}
-
-
-void XMLParser::addContainer(Container * container)
-{
-    containers.push_back(container);
-}
-
+void XMLParser::addItem(Item* item) { items.push_back(item); }
+void XMLParser::addCreature(Creature * creature) { creatures.push_back(creature); }
+void XMLParser::addContainer(Container * container) { containers.push_back(container); }
+void XMLParser::addTrigger(Trigger * trigger) { triggers.push_back(trigger); }
 
 void XMLParser::printVectors()
 {   
@@ -52,7 +38,7 @@ Attack * XMLParser::parseAttack(TiXmlElement * element)
             if (name == "action")
                 attack->addAction(value);
             else if (name == "print")
-                attack->setPrint(value); 
+                attack->addPrint(value); 
         }
     }
     // attack->display();
@@ -140,7 +126,7 @@ Container * XMLParser::parseContainer(TiXmlElement * element) {
                 container->setDescription(value);
             else if (name == "status")
                 container->setStatus(value);
-            else if (name == "accepts")
+            else if (name == "accept")
                 container->addAccepts(value);
             else if (name == "trigger")
                 container->addTrigger(parseTrigger(childElement));
@@ -155,6 +141,7 @@ Container * XMLParser::parseContainer(TiXmlElement * element) {
         }
     }
     //container->display();
+    // container->printAttrs();
     bool inArray = 0;
     for (Container* c : containers) { if (c->getName() == container->getName()) inArray = 1; }
     if (!inArray)
@@ -254,7 +241,6 @@ Room * XMLParser::parseRoom(TiXmlElement * element)
             else if (name == "border")
                 room->addBorder(parseBorder(childElement));
             else if (name == "container") {
-                // room->addContainer(parseContainer(childElement));
                 Container* container = new Container();
                 container->setName(value);
                 room->addContainer(container);
@@ -262,7 +248,6 @@ Room * XMLParser::parseRoom(TiXmlElement * element)
                 addContainer(container);
             }
             else if (name == "creature") {
-                // room->addCreature(parseCreature(childElement));
                 Creature* creature = new Creature();
                 creature->setName(value);
                 room->addCreature(creature);
@@ -270,7 +255,6 @@ Room * XMLParser::parseRoom(TiXmlElement * element)
                 addCreature(creature);
             }
             else if (name == "item") {
-                // room->addItem(parseItem(childElement));
                 Item* item = new Item();
                 item->setName(value);
                 room->addItem(item);
@@ -278,8 +262,11 @@ Room * XMLParser::parseRoom(TiXmlElement * element)
                 // item->display();
                 addItem(item);
             }
-            else if (name == "trigger")
+            else if (name == "trigger") {
+                Trigger * trigger = new Trigger();
                 room->addTrigger(parseTrigger(childElement));         
+                addTrigger(trigger);
+            }
         }
     }
     // room->display();
@@ -314,7 +301,9 @@ Trigger * XMLParser::parseTrigger(TiXmlElement * element)
                 
         }
     }
-    // trigger->display();
+    // trigger->printAttrs();
+    // std::cout << std::endl;
+    addTrigger(trigger);
     return trigger;
 }
 
@@ -365,7 +354,7 @@ Map * XMLParser::parseMap(const char * filename) {
             else if (name == "item")
             {
                 Item * tempItem = parseItem(childElement);
-                map->addItem(tempItem);
+                // map->addItem(tempItem);
                 for (Item* i : items)
                     if (i->getName() == tempItem->getName()) {
                         *i = *tempItem;
@@ -374,7 +363,7 @@ Map * XMLParser::parseMap(const char * filename) {
             else if (name == "creature")
             {
                 Creature * tempCreature = parseCreature(childElement);
-                map->addCreature(tempCreature);
+                // map->addCreature(tempCreature);
                 for (Creature* c : creatures)
                     if (c->getName() == tempCreature->getName())
                         *c = *tempCreature;
@@ -382,7 +371,7 @@ Map * XMLParser::parseMap(const char * filename) {
             else if (name == "container")
             {
                 Container * tempContainer = parseContainer(childElement);
-                map->addContainer(tempContainer);
+                // map->addContainer(tempContainer);
                 for (Container* c : containers)
                     if (c->getName() == tempContainer->getName())
                         *c = *tempContainer;
@@ -390,15 +379,31 @@ Map * XMLParser::parseMap(const char * filename) {
         }
     }
   }
-  for (Container * c : map->getContainers()) {
-      for (Item * cont_item : c->getItem()) {
-          for(Item * map_item : map->getItems()) {
-              if (cont_item->getName() == map_item->getName()) {
-                  *cont_item = *map_item;
-              }
-          }
-      }
-  }
+    for (Container * c : containers) {
+        for (Item * cont_item : c->getItems()) {
+            for(Item * map_item : items) {
+                if (cont_item->getName() == map_item->getName()) {
+                    *cont_item = *map_item;
+                    map->addItem(cont_item);
+                }
+            }
+        }
+    }
+    
+    for (Item * parser_item : items) {
+        bool inArray = 0;
+        for (Item * map_item : map->getItems()){
+            if (parser_item->getName() == map_item->getName()) inArray = 1; 
+        }
+        if (!inArray)
+            map->addItem(parser_item);
+    }
+    for (Creature * c : creatures)
+        map->addCreature(c);
+    for (Container * c : containers)
+        map->addContainer(c);
+    for (Trigger * t : triggers)
+        map->addTrigger(t);
     // map->printEVERYTHING();
     return map;
 }

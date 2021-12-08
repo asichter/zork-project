@@ -14,12 +14,16 @@ void Container::display() {
 
 void Container::printAttrs() { 
     if(getName() != "") std::cout << "Container: " << getName() << std::endl; 
-    std::cout << status << std::endl;
-    std::cout << description << std::endl;
-    for (std::string a : accepts)
+    std::cout << "  Deleted?: " << getDeleted() << std::endl;
+    std::cout << "  Status: " + getStatus() << std::endl;
+    std::cout << "  Description: " + getDescription() << std::endl;
+    std::cout << "  Accepts: " << std::endl;
+    for (std::string a : getAccepts())
         std::cout << a << std::endl;
-    for (Trigger* t : triggers)
+    std::cout << "  Triggers: " << std::endl;
+    for (Trigger* t : getTriggers())
         t->display();
+    std::cout << "  Items: " << std::endl;
     for (Item* i : items)
         i->printAttrs();
 }
@@ -44,11 +48,11 @@ void Container::open() {
     openStatus = 1; 
     std::string printString = "";
     printString += getName();
-    if (getItem().empty())
+    if (getItems().empty())
         printString += " is empty.";
     else {
         printString += " contains ";
-        for (auto i : getItem())
+        for (auto i : getItems())
             printString += i->getName() + ", ";
         printString.pop_back();
         printString.pop_back();
@@ -59,6 +63,6 @@ void Container::open() {
 void Container::close() { openStatus = 0; }
 
 std::vector<std::string> Container::getAccepts() { return accepts; }
-std::vector<Item*> Container::getItem() { return items; }
-std::vector<Trigger*> Container::getTrigger() { return triggers; }
+std::vector<Item*> Container::getItems() { return items; }
+std::vector<Trigger*> Container::getTriggers() { return triggers; }
 std::string Container::getName() { return name; }

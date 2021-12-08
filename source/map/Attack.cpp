@@ -6,11 +6,11 @@ Attack::Attack() {}
 Attack::~Attack() {}
 
 void Attack::addCondition(Condition* _condition) { conditions.push_back(_condition); }
-void Attack::setPrint(std::string _print) { print = _print; }
+void Attack::addPrint(std::string _print) { prints.push_back(_print); }
 void Attack::addAction(std::string _action) { actions.push_back(_action); }
 
-std::vector<Condition*> Attack::getCondition() { return conditions; }
-std::string Attack::getPrint() { return print; }
+std::vector<Condition*> Attack::getConditions() { return conditions; }
+std::vector<std::string> Attack::getPrints() { return prints; }
 std::vector<std::string> Attack::getActions() { return actions; }
 
-void Attack::display() { if(getActions().size() != 0)  std::cout << "Attack: " <<  getPrint() << std::endl; }
+void Attack::display() { if(getActions().size() != 0)  std::cout << "Attack: " <<  getPrints().front() << std::endl; }

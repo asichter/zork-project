@@ -34,11 +34,11 @@ public:
 
     virtual void removeItem(Item* item);
 
-    virtual std::vector<Border*> getBorder();
-    virtual std::vector<Item*> getItem();
-    virtual std::vector<Container*> getContainer();
-    virtual std::vector<Creature*> getCreature();
-    virtual std::vector<Trigger*> getTrigger();
+    virtual std::vector<Border*> getBorders();
+    virtual std::vector<Item*> getItems();
+    virtual std::vector<Container*> getContainers();
+    virtual std::vector<Creature*> getCreatures();
+    virtual std::vector<Trigger*> getTriggers();
 
     virtual Trigger * hasTrigger(std::string cmd);
 
