@@ -16,7 +16,7 @@ ASG_DEBUG=debug
 TEST_EXPECTED=expected.txt
 ASG_TEST_COVERAGE=coverage
 COVERAGE_FLAGS=-std=c++11 -lm -fprofile-arcs -ftest-coverage -DNDEBUG
-CLEAN_FILES=*.gcno *.c.gcov *.gcda *.gcda $(EXECUTABLE)
+CLEAN_FILES=*.gcno *.c.gcov *.gcda *.gcda $(EXECUTABLE) zork-project.zip
 ARGS=samples/triggersample.xml
 
 $(EXECUTABLE): $(SRC_C) $(SRC_H)
@@ -62,7 +62,7 @@ make:
 	vim Makefile
 
 zip:
-	zip $(EXECUTABLE).zip header/* header/map/* source/* source/map/* tinyxml/* samples/* Makefile sample.xml zork-project.zip
+	zip $(EXECUTABLE).zip header/* header/map/* source/* source/map/* tinyxml/* samples/* Makefile sample.xml
 
 demo: $(EXECUTABLE)
 	printf "\n\n\x1b[32mOutput from samples/containersample.xml\x1b[0m\n" ;\
