@@ -337,7 +337,6 @@ void Turn(Player * player, std::vector<std::string> cmd_str) {
             
                     if (action_vec.front() == "drop")
                         Drop(player, action_vec.at(1));
-                    else if (action_vec.)
                     action_vec.clear();
                 }
             }

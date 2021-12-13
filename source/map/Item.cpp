@@ -47,6 +47,7 @@ void Item::turn_on() {
     while (ss >> word) { action_vec.push_back(word); }
 
     std::string print_str = turnon->getPrint();
-    this->setStatus(action_vec.at(1));
+    if (action_vec.size() > 2)
+        this->setStatus(action_vec.at(3));
     std::cout << "\t" + print_str << std::endl;
 }
