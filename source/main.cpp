@@ -235,24 +235,33 @@ void Drop(Player * player, std::string item) {
 void Take(Player * player, std::string item_name) {
     Item * i = contains(player->getCurrentRoom()->getItems(), item_name);
     Item * inv = contains(player->getInventory(), item_name);
+    bool itemFound = false;
     if (inv != NULL)
-        std::cout << item_name + "already in inventory" << std::endl;
+        std::cout << "\t" + item_name + " already in inventory" << std::endl;
     else if (i != NULL)
         player->take(i);
     else {
         std::vector<Container*> cs = player->getCurrentRoom()->getContainers();
-        for (auto c : cs) {
-            i = contains(c->getItems(), item_name);
-            if (i != NULL){
-                if (c->isOpen()) {
-                    if (i == NULL)
-                        std::cout << "\tYou don't see a " + item_name + " to take..." << std::endl;
-                    else 
-                        player->take(i);
-                } else {
-                    std::cout << "\t" + c->getName() + " is not open." << std::endl;
-                }
-            }            
+        if (cs.empty())
+            std::cout << "\tYou don't see a " + item_name + " to take..." << std::endl;
+        else {
+            for (auto c : cs) {
+                i = contains(c->getItems(), item_name);
+                if (i != NULL){
+                    if (c->isOpen()) {
+                        if (i == NULL)
+                            std::cout << "\tYou don't see a " + item_name + " to take..." << std::endl;
+                        else {
+                            itemFound = true;
+                            player->take(i);
+                        }
+                    } else {
+                        std::cout << "\t" + c->getName() + " is not open." << std::endl;
+                    }
+                }            
+            }
+            if (itemFound == false)
+                std::cout << "\tYou don't see a " + item_name + " to take..." << std::endl;
         }
     }
 }
@@ -325,9 +334,10 @@ void Turn(Player * player, std::vector<std::string> cmd_str) {
                     std::istringstream ss(a);
                     std::string word;
                     while (ss >> word) { action_vec.push_back(word); }
-
+            
                     if (action_vec.front() == "drop")
                         Drop(player, action_vec.at(1));
+                    else if (action_vec.)
                     action_vec.clear();
                 }
             }
@@ -486,11 +496,20 @@ bool checkAllConditions(T * obj, Player * player, Map * map) {
     return conditionsMet;
 }
 
+Trigger * hasTrigger(std::vector<Trigger *> triggers, std::string cmd) {
+    for (Trigger * t : triggers) {
+        if (t->getCommand() == cmd) {
+            return t;
+        }
+    }
+    return NULL;
+}
+
 bool checkCmdTriggers(std::vector<Trigger*> triggers, std::string cmd, Player * player, Map * map) {
     if (triggers.empty())
         return false;
 
-    if (player->getCurrentRoom()->hasTrigger(cmd) == NULL)
+    if (hasTrigger(triggers, cmd) == NULL)
         return false;
 
     bool condMet = true;
