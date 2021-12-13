@@ -62,7 +62,7 @@ make:
 	vim Makefile
 
 zip:
-	zip $(EXECUTABLE).zip header/* header/map/* source/* source/map/* tinyxml/* samples/* Makefile sample.xml
+	zip $(EXECUTABLE).zip header/* header/map/* source/* source/map/* tinyxml/* samples/* Makefile sample.xml zork-project.zip
 
 demo: $(EXECUTABLE)
 	printf "\n\n\x1b[32mOutput from samples/containersample.xml\x1b[0m\n" ;\

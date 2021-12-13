@@ -160,6 +160,16 @@ void dump_to_stdout(const char* pFilename)
 	}
 }
 
+std::string get_cmd_item(std::vector<std::string> cmd_str) {
+    cmd_str.erase(cmd_str.begin());
+    std::string item_name = "";
+    for (auto s : cmd_str) {
+        item_name += s + " ";
+    }
+    item_name.pop_back();
+    return item_name;
+}
+
 void Add(std::string object, std::string destination, Map * map) {
     
     Room * destination_room = contains(map->getRooms(), destination);
@@ -219,6 +229,7 @@ void Update(std::string object, std::string status, Map * map){
 void Drop(Player * player, std::string item) {
     Item * i = contains(player->getInventory(), item);
     if (i != NULL) player->drop(i);
+    else notInInv(item);
 }
 
 void Take(Player * player, std::string item_name) {
@@ -285,6 +296,45 @@ void Put(Player * player, std::vector<std::string> cmd_str) {
     }
 }
 
+void Open(Player * player, std::string item_name, std::string full_cmd) {
+    Container * c = contains(player->getCurrentRoom()->getContainers(), item_name);
+    if (c != NULL) player->open(c);
+    else if (full_cmd != "open exit") std::cout << "\tThere is no " + item_name + " to open..." << std::endl;
+}
+
+void Read(Player * player, std::string item_name) {
+    Item * item = contains(player->getInventory(), item_name);
+    if (item != NULL)
+        player->read(item, item_name);
+    else
+        notInInv(item_name);
+}
+
+void Turn(Player * player, std::vector<std::string> cmd_str) {
+    if (cmd_str.at(1) == "on") {
+        cmd_str.erase(cmd_str.begin());
+        std::string item_name = get_cmd_item(cmd_str);
+        Item * item = contains(player->getInventory(), item_name);
+        if (item == NULL)
+            notInInv(item_name);
+        else {
+            item->turn_on();
+            if (!(item->getTurnon()->getActions().empty())) {
+                for (std::string a : item->getTurnon()->getActions()) {
+                    std::vector<std::string> action_vec;
+                    std::istringstream ss(a);
+                    std::string word;
+                    while (ss >> word) { action_vec.push_back(word); }
+
+                    if (action_vec.front() == "drop")
+                        Drop(player, action_vec.at(1));
+                    action_vec.clear();
+                }
+            }
+        }
+    }
+}
+
 void GameOver(Map * map) {
     map->setGameOver(true);
 }
@@ -317,16 +367,6 @@ bool valid_cmd(std::string cmd) {
             return 1;
     }
     return 0;
-}
-
-std::string get_cmd_item(std::vector<std::string> cmd_str) {
-    cmd_str.erase(cmd_str.begin());
-    std::string item_name = "";
-    for (auto s : cmd_str) {
-        item_name += s + " ";
-    }
-    item_name.pop_back();
-    return item_name;
 }
 
 std::vector<std::string> parse_put(std::vector<std::string> cmd_str) {
@@ -452,7 +492,7 @@ bool checkCmdTriggers(std::vector<Trigger*> triggers, std::string cmd, Player * 
 
     if (player->getCurrentRoom()->hasTrigger(cmd) == NULL)
         return false;
-        
+
     bool condMet = true;
     for (Trigger * trigger : triggers) {
         if (trigger->getCommand() == cmd && trigger->getType() != "used") {
@@ -602,112 +642,31 @@ int main(int argc, char * argv[]) {
             std::cout << "\n\t Please specify what item you would like to " + command + "!" << std::endl;
         }
 		else if(command == "take") {
-            // bool opened = false;
             std::string item_name = get_cmd_item(cmd_str);
-            Item * i = contains(player->getCurrentRoom()->getItems(), item_name);
-            Item * inv = contains(player->getInventory(), item_name);
-            if (inv != NULL)
-                std::cout << item_name + "already in inventory" << std::endl;
-            else if (i != NULL)
-                player->take(i);
-            else {
-                std::vector<Container*> cs = player->getCurrentRoom()->getContainers();
-                for (auto c : cs) {
-                    i = contains(c->getItems(), item_name);
-                    if (i != NULL){
-                        if (c->isOpen()) {
-                            if (i == NULL)
-                                std::cout << "\tYou don't see a " + item_name + " to take..." << std::endl;
-                            else 
-                                player->take(i);
-                        } else {
-                            std::cout << "\t" + c->getName() + " is not open." << std::endl;
-                        }
-                    }            
-                }
-            }
+            Take(player, item_name);
 		}
 		else if(command == "drop") {
             std::string item_name = get_cmd_item(cmd_str);
-            Item * i = contains(player->getInventory(), item_name);
-            if (i != NULL) player->drop(i);
-            else notInInv(item_name);
+            Drop(player, item_name);
 		}
         else if(command == "open") {
             std::string item_name = get_cmd_item(cmd_str);
-            Container * c = contains(player->getCurrentRoom()->getContainers(), item_name);
-            if (c != NULL) player->open(c);
-            else if (full_cmd != "open exit") std::cout << "\tThere is no " + item_name + " to open..." << std::endl;
+            Open(player, item_name, full_cmd);
         }
         else if (command == "read") {
             std::string item_name = get_cmd_item(cmd_str);
-            Item * item = contains(player->getInventory(), item_name);
-            if (item != NULL)
-                player->read(item, item_name);
-            else
-                notInInv(item_name);
+            Read(player, item_name);
         }
         else if (command == "put") {
-            std::vector<std::string> put_str = parse_put(cmd_str);
-            if (!put_str.empty()) {
-                Item * item = contains(player->getInventory(), put_str.at(0));
-                if (item == NULL) 
-                    notInInv(put_str.at(0));
-                else {
-                    Container * container = contains(player->getCurrentRoom()->getContainers(), put_str.at(1));
-                    if (container == NULL || container->getDeleted()) {
-                        std::cout << "\tYou cannot access that container!" << std::endl;
-                    } else if (!(container->getAccepts().empty())) {
-                        if (contains(container->getAccepts(), put_str.at(0)) != "") 
-                            player->put(item, container);
-                    } else if (!container->isOpen()) {
-                        std::cout << "\tCannot put " + put_str.at(0) + " in closed " + put_str.at(1) + "." << std::endl;
-                    } else { 
-                        player->put(item, container);
-                    }
-                }
-            }
+            Put(player, cmd_str);
         }
         else if (command == "turn") {
-            if (cmd_str.at(1) == "on") {
-                cmd_str.erase(cmd_str.begin());
-                std::string item_name = get_cmd_item(cmd_str);
-                Item * item = contains(player->getInventory(), item_name);
-                if (item == NULL)
-                    notInInv(item_name);
-                else {
-                    item->turn_on();
-                    if (!(item->getTurnon()->getActions().empty())) {
-                        for (std::string a : item->getTurnon()->getActions()) {
-                            std::vector<std::string> action_vec;
-                            std::istringstream ss(a);
-                            std::string word;
-                            while (ss >> word) { action_vec.push_back(word); }
-
-                            if (action_vec.front() == "drop")
-                                Drop(player, action_vec.at(1));
-                            action_vec.clear();
-                        }
-                    }
-                }
-            }
+            Turn(player, cmd_str);
         }
         else if (command == "attack"){
             std::string creature_of_attack = cmd_str.at(1); // NEED: IMPLEMENT MULTI WORD HANDLING
             std::string item_of_attack = cmd_str.at(3); //  NEED: IMPLEMENT MULTI WORD HANDLING
-            Creature * creature = contains(player->getCurrentRoom()->getCreatures(), creature_of_attack);
-            if (creature == NULL)
-                std::cout << "\tYou don't see a " + creature_of_attack + " in this room..." << std::endl;
-            else if (contains(player->getInventory(), item_of_attack) == NULL)
-                notInInv(item_of_attack);
-            else {
-                std::cout << "\tYou assault the " + creature_of_attack + " with the " + item_of_attack << std::endl;
-                for (std::string v : creature->getVulnerabilities()) {
-                    if (v == item_of_attack) {
-                        checkAllConditions(creature->getAttack(), player, map);
-                    }
-                }
-            }
+            Attack(player, creature_of_attack, item_of_attack, map);
         }
 		else if(command == "h" || command == "help") {
 			help();
